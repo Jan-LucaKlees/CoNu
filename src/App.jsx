@@ -1,23 +1,32 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import injectSheet from 'react-jss';
+import WebFont from 'webfontloader';
 
 import Game from './Game';
 
 
+WebFont.load({
+  google: {
+    families: ['Share Tech Mono', 'Sarpanch:900' ],
+  }
+});
+
 const Cell = injectSheet({
 	cell: {
-		width: '3rem',
-		height: '4.5rem',
-		borderWidth: '0.25rem',
+		height: '3.7rem',
+		borderWidth: '0.2rem',
 		borderStyle: 'solid',
-		borderColor: ({ crossedOut }) => crossedOut ? '#aaa' : '#000',
+		borderColor: ({ crossedOut }) => crossedOut ? '#a8a9ab' : '#0e1111',
+		borderRadius: '0.15rem',
 
-		backgroundColor: ({ selected, crossedOut }) => crossedOut ? '#eee' : selected ? '#ffbbbb' : '#fff',
+		backgroundColor: ({ selected, crossedOut }) => crossedOut ? '#ebedef' : selected ? '#babcf0' : '#fdfeff',
 
 		textAlign: 'center',
-		fontSize: '3rem',
-		color: ({ crossedOut }) => crossedOut ? '#aaa' : '#000',
+		padding: '0.25rem 0',
+		fontSize: '2.5rem',
+		fontFamily: '"Share Tech Mono", monospace',
+		color: ({ crossedOut }) => crossedOut ? '#a8a9ab' : '#0e1111',
 
 		overflow: 'hidden',
 		cursor: 'pointer',
@@ -26,17 +35,57 @@ const Cell = injectSheet({
 
 const styles = {
 	'@global': {
+		html: {
+			fontSize: '4vw',
+		},
 		body: {
-			backgroundColor: '#ddd',
+			backgroundColor: '#ebedef',
+			widht: '100vw',
+			minHeight: '100vh',
+			color: '#0e1111',
+			fontFamily: '"Share Tech Mono", monospace',
 		},
 	},
+	main: {
+		width: '100vw',
+		margin: '0 auto',
+		textAlign: 'center',
+	},
+	header: {
+		marginTop: '',
+	},
+	title: {
+		fontSize: '8rem',
+		fontFamily: '"Sarpanch", sans-serif',
+		fontWeight: '900',
+	},
 	gameField: {
-		width: '33rem',
-		margin: '12rem auto',
 		display: 'grid',
 		gridTemplateColumns: 'repeat(9, 1fr)',
-		gridColumnGap: '1rem',
-		gridRowGap: '1rem',
+		gridColumnGap: '0.2rem',
+		gridRowGap: '0.2rem',
+		padding: '0.4rem',
+		marginBottom: '1rem',
+	},
+	btnExtend: {
+		height: '3.7rem',
+		borderWidth: '0.2rem',
+		borderStyle: 'solid',
+		borderColor: '#0e1111',
+		borderRadius: '0.15rem',
+
+		backgroundColor: '#fdfeff',
+
+		textAlign: 'center',
+		padding: '0.2rem 1rem',
+		fontSize: '2.5rem',
+		fontFamily: '"Share Tech Mono", monospace',
+
+		overflow: 'hidden',
+		cursor: 'pointer',
+
+		marginBottom: '1rem',
+		color: '#0e1111',
 	}
 }
 
@@ -67,8 +116,10 @@ class _App extends React.PureComponent {
 	render() {
 		let { classes } = this.props;
 		return (
-			<main>
-				<button disabled={ this.state.finished } onClick={ () => this.extendField() }> extend </button>
+			<main className={ classes.main }>
+				<header>
+					<h1 className={ classes.title }>CoNu</h1>
+				</header>
 				{ this.state.finished && <h2>You won!</h2> }
 				<div className={ classes.gameField }>
 					{ this.state.game.map( ( number, index ) => <Cell
@@ -78,6 +129,12 @@ class _App extends React.PureComponent {
 						crossedOut={ number < 0 }
 						selected={ this.state.selectedCell == index }/> ) }
 				</div>
+				<button
+					className={ classes.btnExtend }
+					disabled={ this.state.finished }
+					onClick={ () => this.extendField() }>
+					Extend
+				</button>
 			</main>
 		);
 	}

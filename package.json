@@ -14,7 +14,8 @@
     "prop-types": "^15.6.2",
     "react": "^16.6.3",
     "react-dom": "^16.6.3",
-    "react-jss": "^8.6.1"
+    "react-jss": "^8.6.1",
+    "webfontloader": "^1.6.28"
   },
   "devDependencies": {
     "@babel/core": "^7.2.2",
