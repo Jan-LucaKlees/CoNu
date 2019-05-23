@@ -86,5 +86,9 @@ export default class Game {
 	extendField() {
 		this.field = this.field.concat( this.field.filter( ( val, index ) => this.isNotCrossedOut( index ) ) );
 	}
+
+	isFinished() {
+		return this.field.every( (val, index) => this.isCrossedOut( index ) );
+	}
 }
 

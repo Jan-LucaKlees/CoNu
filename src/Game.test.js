@@ -127,4 +127,12 @@ describe( 'extendField for continuing the game, when no more cells to cross out 
 		game.extendField()
 		expect( game.field ).toEqual( [0, 1, 2, 0, 1, 2] )
 	});
+});
+
+describe( 'isFinished for checking if there are no more unused cells and the game is won', () => {
+	test( 'It should identify a finished game', () => {
+		let game = new Game( [-1, -2, -3] );
+		expect( game.isFinished() ).toEqual( true )
+	});
 })
+
