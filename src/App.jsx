@@ -11,12 +11,13 @@ const Cell = injectSheet({
 		height: '4.5rem',
 		borderWidth: '0.25rem',
 		borderStyle: 'solid',
-		borderColor: ({ number }) => number > 0 ? 'black' : 'grey',
+		borderColor: ({ crossedOut }) => crossedOut ? '#aaa' : '#000',
 
-		backgroundColor: ({ selected }) => selected ? '#ffbbbb' : '#fff',
+		backgroundColor: ({ selected, crossedOut }) => crossedOut ? '#eee' : selected ? '#ffbbbb' : '#fff',
 
 		textAlign: 'center',
 		fontSize: '3rem',
+		color: ({ crossedOut }) => crossedOut ? '#aaa' : '#000',
 
 		overflow: 'hidden',
 		cursor: 'pointer',
@@ -61,8 +62,9 @@ class _App extends React.PureComponent {
 			<div className={ classes.gameField }>
 				{ this.state.game.map( ( number, index ) => <Cell
 					key={ index }
-					number={ number }
+					number={ Math.abs( number ) }
 					onClick={ () => this.selectField( index ) }
+					crossedOut={ number < 0 }
 					selected={ this.state.selectedCell == index }/> ) }
 			</div>
 		);
