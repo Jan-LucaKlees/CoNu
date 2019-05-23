@@ -48,7 +48,7 @@ class _App extends React.PureComponent {
 			selectedCell: null,
 		}
 	}
-	selectField( fieldIndex ) {
+	selectCell( fieldIndex ) {
 		if( this.state.selectedCell && this.state.game.canFieldsBeCrossedOut( this.state.selectedCell, fieldIndex ) ){
 			this.state.game.crossOut( this.state.selectedCell, fieldIndex )
 			this.setState({ selectedCell: null });
@@ -56,17 +56,24 @@ class _App extends React.PureComponent {
 			this.setState({ selectedCell: fieldIndex });
 		}
 	}
+	extendField() {
+		this.state.game.extendField();
+		this.forceUpdate();
+	}
 	render() {
 		let { classes } = this.props;
 		return (
-			<div className={ classes.gameField }>
-				{ this.state.game.map( ( number, index ) => <Cell
-					key={ index }
-					number={ Math.abs( number ) }
-					onClick={ () => this.selectField( index ) }
-					crossedOut={ number < 0 }
-					selected={ this.state.selectedCell == index }/> ) }
-			</div>
+			<main>
+				<button onClick={ () => this.extendField() }> extend </button>
+				<div className={ classes.gameField }>
+					{ this.state.game.map( ( number, index ) => <Cell
+						key={ index }
+						number={ Math.abs( number ) }
+						onClick={ () => this.selectCell( index ) }
+						crossedOut={ number < 0 }
+						selected={ this.state.selectedCell == index }/> ) }
+				</div>
+			</main>
 		);
 	}
 }

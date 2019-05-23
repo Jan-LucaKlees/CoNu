@@ -36,7 +36,13 @@ export default class Game {
 	}
 
 	isCrossedOut( index ) {
+		console.assert( typeof this.field[index] !== 'undefined' )
+
 		return this.field[index] < 0
+	}
+
+	isNotCrossedOut( index ) {
+		return !this.isCrossedOut( index );
 	}
 
 	isNeighbourOf( index1, index2 ) {
@@ -77,5 +83,8 @@ export default class Game {
 		return val1 === val2 || val1 + val2 === 10;
 	}
 
+	extendField() {
+		this.field = this.field.concat( this.field.filter( ( val, index ) => this.isNotCrossedOut( index ) ) );
+	}
 }
 

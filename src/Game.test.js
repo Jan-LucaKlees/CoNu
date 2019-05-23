@@ -120,3 +120,11 @@ describe( 'isNeighbourOf for finding neighbouring cells', () => {
 		});
 	})
 });
+
+describe( 'extendField for continuing the game, when no more cells to cross out are available', () => {
+	test( 'It should append all unused cells to the end of the field', () => {
+		let game = new Game( [0, 1, 2] );
+		game.extendField()
+		expect( game.field ).toEqual( [0, 1, 2, 0, 1, 2] )
+	});
+})
