@@ -2,9 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import injectSheet from 'react-jss';
 
-import GameField from './GameField';
-
-let gameField = new GameField()
+import Game from './Game';
 
 
 const Cell = injectSheet({
@@ -15,13 +13,15 @@ const Cell = injectSheet({
 		borderStyle: 'solid',
 		borderColor: ({ number }) => number > 0 ? 'black' : 'grey',
 
+		backgroundColor: ({ selected }) => selected ? '#ffbbbb' : '#fff',
+
 		textAlign: 'center',
 		fontSize: '3rem',
 
 		overflow: 'hidden',
 		cursor: 'pointer',
 	}
-})( ({ number, classes }) => <div className={ classes.cell }>{ Math.abs( number ) }</div> );
+})( ({ number, onClick, classes }) => <div className={ classes.cell } onClick={ onClick }>{ Math.abs( number ) }</div> );
 
 const styles = {
 	'@global': {
@@ -42,12 +42,28 @@ const styles = {
 class _App extends React.PureComponent {
 	constructor( props ) {
 		super( props );
+		this.state = {
+			game: new Game(),
+			selectedCell: null,
+		}
+	}
+	selectField( fieldIndex ) {
+		if( this.state.selectedCell && this.state.game.canFieldsBeCrossedOut( this.state.selectedCell, fieldIndex ) ){
+			this.state.game.crossOut( this.state.selectedCell, fieldIndex )
+			this.setState({ selectedCell: null });
+		} else {
+			this.setState({ selectedCell: fieldIndex });
+		}
 	}
 	render() {
 		let { classes } = this.props;
 		return (
 			<div className={ classes.gameField }>
-				{ gameField.map( ( number, index ) => <Cell key={index} number={number} /> ) }
+				{ this.state.game.map( ( number, index ) => <Cell
+					key={ index }
+					number={ number }
+					onClick={ () => this.selectField( index ) }
+					selected={ this.state.selectedCell == index }/> ) }
 			</div>
 		);
 	}
