@@ -1,0 +1,39 @@
+html {
+	font-size: 4vw;
+}
+
+body {
+	background-color: #ebedef;
+	width: 100vw;
+	min-height: 100vh;
+	color: #0e1111;
+	font-family: "Share Tech Mono", monospace;
+}
+
+.main {
+	width: 100vw;
+	margin: 0 auto;
+	text-align: center;
+}
+
+.title {
+	font-size: 8rem;
+	font-family: "Sarpanch", sans-serif;
+	font-weight: 900;
+}
+
+.field {
+	display: grid;
+	grid-template-columns: repeat(9, 1fr);
+	grid-column-gap: 0.2rem;
+	grid-row-gap: 0.2rem;
+
+	padding: 0.4rem;
+	margin-bottom: 1rem;
+}
+
+.btn-extend-field {
+	@include btn;
+
+	margin-bottom: 1rem;
+}

@@ -1,0 +1,8 @@
+@import './mixins';
+
+.cell {
+	@include btn;
+
+	padding: 0.25rem 0;
+}
+

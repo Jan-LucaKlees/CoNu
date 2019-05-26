@@ -1,9 +1,12 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import injectSheet from 'react-jss';
 import WebFont from 'webfontloader';
 
+import './scss/main.scss';
+
 import Game from './Game';
+
+import Cell from './Cell'
 
 
 WebFont.load({
@@ -12,84 +15,7 @@ WebFont.load({
   }
 });
 
-const Cell = injectSheet({
-	cell: {
-		height: '3.7rem',
-		borderWidth: '0.2rem',
-		borderStyle: 'solid',
-		borderColor: ({ crossedOut }) => crossedOut ? '#a8a9ab' : '#0e1111',
-		borderRadius: '0.15rem',
-
-		backgroundColor: ({ selected, crossedOut }) => crossedOut ? '#ebedef' : selected ? '#babcf0' : '#fdfeff',
-
-		textAlign: 'center',
-		padding: '0.25rem 0',
-		fontSize: '2.5rem',
-		fontFamily: '"Share Tech Mono", monospace',
-		color: ({ crossedOut }) => crossedOut ? '#a8a9ab' : '#0e1111',
-
-		overflow: 'hidden',
-		cursor: 'pointer',
-	}
-})( ({ number, onClick, classes }) => <div className={ classes.cell } onClick={ onClick }>{ Math.abs( number ) }</div> );
-
-const styles = {
-	'@global': {
-		html: {
-			fontSize: '4vw',
-		},
-		body: {
-			backgroundColor: '#ebedef',
-			widht: '100vw',
-			minHeight: '100vh',
-			color: '#0e1111',
-			fontFamily: '"Share Tech Mono", monospace',
-		},
-	},
-	main: {
-		width: '100vw',
-		margin: '0 auto',
-		textAlign: 'center',
-	},
-	header: {
-		marginTop: '',
-	},
-	title: {
-		fontSize: '8rem',
-		fontFamily: '"Sarpanch", sans-serif',
-		fontWeight: '900',
-	},
-	gameField: {
-		display: 'grid',
-		gridTemplateColumns: 'repeat(9, 1fr)',
-		gridColumnGap: '0.2rem',
-		gridRowGap: '0.2rem',
-		padding: '0.4rem',
-		marginBottom: '1rem',
-	},
-	btnExtend: {
-		height: '3.7rem',
-		borderWidth: '0.2rem',
-		borderStyle: 'solid',
-		borderColor: '#0e1111',
-		borderRadius: '0.15rem',
-
-		backgroundColor: '#fdfeff',
-
-		textAlign: 'center',
-		padding: '0.2rem 1rem',
-		fontSize: '2.5rem',
-		fontFamily: '"Share Tech Mono", monospace',
-
-		overflow: 'hidden',
-		cursor: 'pointer',
-
-		marginBottom: '1rem',
-		color: '#0e1111',
-	}
-}
-
-class _App extends React.PureComponent {
+class App extends React.PureComponent {
 	constructor( props ) {
 		super( props );
 		this.state = {
@@ -114,14 +40,13 @@ class _App extends React.PureComponent {
 		this.forceUpdate();
 	}
 	render() {
-		let { classes } = this.props;
 		return (
-			<main className={ classes.main }>
+			<main className="main">
 				<header>
-					<h1 className={ classes.title }>CoNu</h1>
+					<h1 className="title">CoNu</h1>
 				</header>
 				{ this.state.finished && <h2>You won!</h2> }
-				<div className={ classes.gameField }>
+				<div className="field">
 					{ this.state.game.map( ( number, index ) => <Cell
 						key={ index }
 						number={ Math.abs( number ) }
@@ -130,7 +55,7 @@ class _App extends React.PureComponent {
 						selected={ this.state.selectedCell == index }/> ) }
 				</div>
 				<button
-					className={ classes.btnExtend }
+					className="btn-extend-field"
 					disabled={ this.state.finished }
 					onClick={ () => this.extendField() }>
 					Extend
@@ -139,8 +64,6 @@ class _App extends React.PureComponent {
 		);
 	}
 }
-const App = injectSheet( styles )( _App );
-
 
 ReactDOM.render(
 	<App />,

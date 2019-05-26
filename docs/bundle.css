@@ -1,0 +1,140 @@
+/*! minireset.css v0.0.5 | MIT License | github.com/jgthms/minireset.css */
+html,
+body,
+p,
+ol,
+ul,
+li,
+dl,
+dt,
+dd,
+blockquote,
+figure,
+fieldset,
+legend,
+textarea,
+pre,
+iframe,
+hr,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  margin: 0;
+  padding: 0; }
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-size: 100%;
+  font-weight: normal; }
+
+ul {
+  list-style: none; }
+
+button,
+input,
+select,
+textarea {
+  margin: 0; }
+
+html {
+  box-sizing: border-box; }
+
+*, *:before, *:after {
+  box-sizing: inherit; }
+
+img,
+video {
+  height: auto;
+  max-width: 100%; }
+
+iframe {
+  border: 0; }
+
+table {
+  border-collapse: collapse;
+  border-spacing: 0; }
+
+td,
+th {
+  padding: 0;
+  text-align: left; }
+
+html {
+  font-size: 4vw; }
+
+body {
+  background-color: #ebedef;
+  width: 100vw;
+  min-height: 100vh;
+  color: #0e1111;
+  font-family: "Share Tech Mono", monospace; }
+
+.main {
+  width: 100vw;
+  margin: 0 auto;
+  text-align: center; }
+
+.title {
+  font-size: 8rem;
+  font-family: "Sarpanch", sans-serif;
+  font-weight: 900; }
+
+.field {
+  display: grid;
+  grid-template-columns: repeat(9, 1fr);
+  grid-column-gap: 0.2rem;
+  grid-row-gap: 0.2rem;
+  padding: 0.4rem;
+  margin-bottom: 1rem; }
+
+.btn-extend-field {
+  height: 3.7rem;
+  padding: 0.25rem 0.75rem;
+  border-width: 0.2rem;
+  border-style: solid;
+  border-color: #0e1111;
+  border-radius: 0.15rem;
+  text-align: center;
+  font-size: 2.5rem;
+  font-family: inherit;
+  color: #0e1111;
+  background-color: #fdfeff;
+  overflow: hidden;
+  cursor: pointer;
+  margin-bottom: 1rem; }
+  .btn-extend-field:active, .btn-extend-field.active {
+    background-color: #babcf0; }
+  .btn-extend-field:disabled, .btn-extend-field.disabled {
+    border-color: #a8a9ab;
+    background-color: #ebedef;
+    color: #a8a9ab; }
+
+.cell {
+  height: 3.7rem;
+  padding: 0.25rem 0.75rem;
+  border-width: 0.2rem;
+  border-style: solid;
+  border-color: #0e1111;
+  border-radius: 0.15rem;
+  text-align: center;
+  font-size: 2.5rem;
+  font-family: inherit;
+  color: #0e1111;
+  background-color: #fdfeff;
+  overflow: hidden;
+  cursor: pointer;
+  padding: 0.25rem 0; }
+  .cell:active, .cell.active {
+    background-color: #babcf0; }
+  .cell:disabled, .cell.disabled {
+    border-color: #a8a9ab;
+    background-color: #ebedef;
+    color: #a8a9ab; }
+
