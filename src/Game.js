@@ -31,8 +31,21 @@ export default class Game {
 		console.assert( typeof this.field[index2] !== 'undefined' )
 		console.assert( this.canCellsBeCrossedOut( index1, index2 ) )
 
+		// cross out cells
 		this.field[index1] *= -1;
 		this.field[index2] *= -1;
+
+		// remove crossed out rows
+		let row1 = this.getRowByCellIndex( index1 );
+		let row2 = this.getRowByCellIndex( index2 );
+
+		if( this.isRowCrossedOut( row1 ) ) {
+			this.removeRow( row1 )
+		}
+
+		if( this.isRowCrossedOut( row2 ) ) {
+			this.removeRow( row2 )
+		}
 	}
 
 	isCrossedOut( index ) {
@@ -43,6 +56,15 @@ export default class Game {
 
 	isNotCrossedOut( index ) {
 		return !this.isCrossedOut( index );
+	}
+
+	isRowCrossedOut( row ) {
+		for( let i = row * this.width; i < ( row + 1 ) * this.width; i++ ) {
+			if( this.isNotCrossedOut( i ) ) {
+				return false;
+			}
+		}
+		return true;
 	}
 
 	isNeighbourOf( index1, index2 ) {
@@ -81,6 +103,18 @@ export default class Game {
 
 	canValuesBeCrossedOut( val1, val2 ) {
 		return val1 === val2 || val1 + val2 === 10;
+	}
+
+	getRowByCellIndex( index ) {
+		console.assert( typeof this.field[index] !== 'undefined' )
+
+		return Math.floor( index / this.width );
+	}
+
+	removeRow( row ) {
+		console.assert( this.isRowCrossedOut( row ) );
+
+		this.field.splice( row * this.width, this.width );
 	}
 
 	extendField() {

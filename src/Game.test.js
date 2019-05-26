@@ -121,6 +121,60 @@ describe( 'isNeighbourOf for finding neighbouring cells', () => {
 	})
 });
 
+describe( 'Row operations', () => {
+	describe( 'getRowByCellIndex for finding a row number given only the index of a cell', () => {
+		test( 'It should return the row index for a valid cell index', () => {
+			let field = [ 0,-1, 2,
+										3, 4,-5,
+										6, 7, 8];
+			let game = new Game( field, 3 );
+
+			expect( game.getRowByCellIndex( 0 ) ).toEqual( 0 );
+			expect( game.getRowByCellIndex( 1 ) ).toEqual( 0 );
+			expect( game.getRowByCellIndex( 2 ) ).toEqual( 0 );
+			expect( game.getRowByCellIndex( 3 ) ).toEqual( 1 );
+			expect( game.getRowByCellIndex( 4 ) ).toEqual( 1 );
+			expect( game.getRowByCellIndex( 5 ) ).toEqual( 1 );
+			expect( game.getRowByCellIndex( 6 ) ).toEqual( 2 );
+			expect( game.getRowByCellIndex( 7 ) ).toEqual( 2 );
+			expect( game.getRowByCellIndex( 8 ) ).toEqual( 2 );
+		})
+	})
+	describe( 'isRowCrossedOut for checking if all cells in a row are crossed out', () => {
+		test( 'It should return true for rows that are entirely crossed out', () => {
+			let field = [ 0,-1, 2,
+									 -3,-4,-5,
+									  6, 7, 8];
+			let game = new Game( field, 3 );
+
+			expect( game.isRowCrossedOut( 1 ) ).toEqual( true );
+		})
+		test( 'It should reject rows that still have usable cells', () => {
+			let field = [ 0,-1, 2,
+									 -3,-4,-5,
+									  6, 7, 8];
+			let game = new Game( field, 3 );
+
+			expect( game.isRowCrossedOut( 0 ) ).toEqual( false );
+			expect( game.isRowCrossedOut( 2 ) ).toEqual( false );
+		})
+	});
+	describe( 'removeRow for removing row where all cells are crossed out', () => {
+		test( 'It should remove a row given a valid row index', () => {
+			let field    = [ 0,-1, 2,
+									    -3,-4,-5,
+									     6, 7, 8];
+			let expected = [ 0,-1, 2,
+			                 6, 7, 8];
+
+			let game = new Game( field, 3 );
+			game.removeRow( 1 );
+
+			expect( game.field ).toEqual( expected );
+		})
+	});
+});
+
 describe( 'extendField for continuing the game, when no more cells to cross out are available', () => {
 	test( 'It should append all unused cells to the end of the field', () => {
 		let game = new Game( [0, 1, 2] );
