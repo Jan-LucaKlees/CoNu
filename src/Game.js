@@ -15,7 +15,7 @@ export default class Game {
 		return this.field.map( callback )
 	}
 
-	canFieldsBeCrossedOut( index1, index2 ) {
+	canCellsBeCrossedOut( index1, index2 ) {
 		console.assert( typeof this.field[index1] !== 'undefined', "Invalid first index supplied!")
 		console.assert( typeof this.field[index2] !== 'undefined', "Invalid second index supplied!" )
 		console.assert( index1 !== index2, "A field cannot be crossed out with itself!" )
@@ -29,7 +29,7 @@ export default class Game {
 	crossOut( index1, index2 ) {
 		console.assert( typeof this.field[index1] !== 'undefined' )
 		console.assert( typeof this.field[index2] !== 'undefined' )
-		console.assert( this.canFieldsBeCrossedOut( index1, index2 ) )
+		console.assert( this.canCellsBeCrossedOut( index1, index2 ) )
 
 		this.field[index1] *= -1;
 		this.field[index2] *= -1;

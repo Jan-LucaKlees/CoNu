@@ -99,7 +99,7 @@ class _App extends React.PureComponent {
 		}
 	}
 	selectCell( fieldIndex ) {
-		if( this.state.selectedCell && this.state.game.canFieldsBeCrossedOut( this.state.selectedCell, fieldIndex ) ){
+		if( this.state.selectedCell && this.state.game.canCellsBeCrossedOut( this.state.selectedCell, fieldIndex ) ){
 			this.state.game.crossOut( this.state.selectedCell, fieldIndex );
 			this.setState({
 				selectedCell: null,
