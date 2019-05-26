@@ -1,6 +1,7 @@
 const webpack = require('webpack');
 const merge = require('webpack-merge');
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
+const HtmlWebpackPlugin = require('html-webpack-plugin');
 
 
 const base = {
@@ -14,12 +15,20 @@ const base = {
 			}
 		]
 	},
+	plugins: [
+		new HtmlWebpackPlugin({
+			'title': 'CoNu - Connect the Numbers!',
+			'template': 'src/index.html',
+			'xhtml': true,
+			'base': '/conu/',
+		})
+  ],
 	resolve: {
 		extensions: ['*', '.js', '.jsx', '.scss']
 	},
 	output: {
 		path: __dirname + '/docs',
-		publicPath: '/',
+		publicPath: '/conu/',
 		filename: 'bundle.js'
 	}
 };
@@ -55,9 +64,12 @@ module.exports = (env, argv) => {
 			},
 			plugins: [
 				new MiniCssExtractPlugin({
-					filename: 'bundle.css'
+					filename: 'bundle.[contenthash].css'
 				})
 			],
+			output: {
+				filename: 'bundle.[contenthash].js'
+			}
 		});
 	} else {
 		return base;
