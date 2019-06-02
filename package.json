@@ -1,7 +1,7 @@
 {
-  "name": "number-game",
+  "name": "CoNu",
   "version": "1.0.0",
-  "description": "A game about crossing out numbers.",
+  "description": "A game about connecting numbers.",
   "main": "index.html",
   "scripts": {
     "test": "jest --watch",
@@ -9,7 +9,7 @@
     "build": "webpack --config ./webpack.config.js --mode production"
   },
   "author": "Jan-Luca Klees",
-  "license": "ISC",
+  "license": "GNU GPLv3",
   "dependencies": {
     "classnames": "^2.2.6",
     "minireset.css": "0.0.5",
