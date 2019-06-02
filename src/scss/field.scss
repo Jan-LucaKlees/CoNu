@@ -1,0 +1,47 @@
+@import './mixins';
+
+.field {
+	display: flex;
+	flex-direction: column;
+
+	padding: 0.4rem;
+	margin-bottom: 1rem;
+}
+
+.row {
+	display: grid;
+	grid-template-columns: repeat( 9, 1fr );
+	grid-column-gap: 0.2rem;
+
+	overflow: hidden;
+
+	transition-properties: height, opacity;
+	transition-timing-function: ease-in;
+	transition-duration: .3s;
+
+	&-exit {
+		height: 3.9rem;
+		opacity: 1;
+	}
+
+	&-exit-active {
+		height: 0;
+		opacity: 0;
+	}
+}
+
+.cell-wrapper {
+	padding: 0.1rem 0;
+}
+
+.cell {
+	@include btn;
+
+	width: 100%;
+	padding: 0.25rem 0;
+
+	transition-properties: color, border-color, background-color;
+	transition-timing-function: ease-out;
+	transition-duration: .3s;
+}
+

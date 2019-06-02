@@ -1,76 +1,124 @@
 const DEFAULT_START_VALUES = [1,2,3,4,5,6,7,8,9,1,1,1,2,1,3,1,4,1,5,1,6,1,7,1,8,1,9];
 const DEFAULT_WIDTH = 9;
 
-export default class Game {
 
-	constructor( startValues = DEFAULT_START_VALUES, width = DEFAULT_WIDTH ) {
-		console.assert( Array.isArray( startValues ) );
+export default class Game {
+	constructor( cells = DEFAULT_START_VALUES, width = DEFAULT_WIDTH) {
+		console.assert( Array.isArray( cells ) );
+		console.assert( cells.every( ( val ) => this.isValidValue( val ) ) );
 		console.assert( Number.isInteger( width ) );
 
-		this.field = startValues;
+		this.cells = cells;
 		this.width = width;
 	}
 
-	map( callback ) {
-		return this.field.map( callback )
+	getCellCount() {
+		return this.cells.length;
 	}
 
-	canCellsBeCrossedOut( index1, index2 ) {
-		console.assert( typeof this.field[index1] !== 'undefined', "Invalid first index supplied!")
-		console.assert( typeof this.field[index2] !== 'undefined', "Invalid second index supplied!" )
-		console.assert( index1 !== index2, "A field cannot be crossed out with itself!" )
+	isValidCellIndex( index ) {
+		console.assert( Number.isInteger( index ) );
 
-		return !this.isCrossedOut( index1 ) &&
-			!this.isCrossedOut( index2 ) &&
-			this.isNeighbourOf( index1, index2 ) &&
-			this.canValuesBeCrossedOut( this.field[index1], this.field[index2] );
+		return 0 <= index && index < this.getCellCount();
 	}
 
-	crossOut( index1, index2 ) {
-		console.assert( typeof this.field[index1] !== 'undefined' )
-		console.assert( typeof this.field[index2] !== 'undefined' )
-		console.assert( this.canCellsBeCrossedOut( index1, index2 ) )
+	getCellNumber( index ) {
+		console.assert( this.isValidCellIndex( index ) );
 
-		// cross out cells
-		this.field[index1] *= -1;
-		this.field[index2] *= -1;
+		return Math.abs( this.cells[ index ] );
+	}
 
-		// remove crossed out rows
-		let row1 = this.getRowByCellIndex( index1 );
-		let row2 = this.getRowByCellIndex( index2 );
+	isCellPairable( index ) {
+		console.assert( this.isValidCellIndex( index ) );
 
-		if( this.isRowCrossedOut( row1 ) ) {
-			this.removeRow( row1 )
+		return this.cells[ index ] > 0;
+	}
+
+	isCellPaired( index ) {
+		console.assert( this.isValidCellIndex( index ) );
+
+		return !this.isCellPairable( index );
+	}
+
+	getCell( index ) {
+		console.assert( this.isValidCellIndex( index ) );
+
+		return {
+				index: index,
+				number: this.getCellNumber( index ),
+				paired: this.isCellPaired( index )
+			};
+	}
+
+	markCellAsPaired( index ) {
+		console.assert( this.isCellPairable( index ) );
+
+		this.cells[ index ] *= -1;
+	}
+
+	getRowCount() {
+		return Math.ceil( this.cells.length / this.width );
+	}
+
+	isValidRowIndex( index ) {
+		console.assert( Number.isInteger( index) );
+
+		return 0 <= index && index < this.getRowCount();
+	}
+
+	* getCellsForRow( index ) {
+		console.assert( this.isValidRowIndex( index ) );
+
+		let start = index * this.width;
+		let stop = Math.min( ( index + 1 ) * this.width, this.cells.length );
+		for (let i = start; i < stop; i++) {
+			yield this.getCell( i );
 		}
+	}
 
-		if( this.isRowCrossedOut( row2 ) ) {
-			this.removeRow( row2 )
+	getRow( index ) {
+		console.assert( this.isValidRowIndex( index ) );
+
+		let cells = Array.from( this.getCellsForRow( index ) );
+
+		return {
+			index: index,
+			cells: cells,
+			hasPairableCells: () => cells.some( ( cell ) => !cell.paired )
+		};
+	}
+
+	* getRows() {
+		for (let i = 0; i < this.getRowCount(); i++) {
+			yield this.getRow( i );
 		}
 	}
 
-	isCrossedOut( index ) {
-		console.assert( typeof this.field[index] !== 'undefined' )
-
-		return this.field[index] < 0
-	}
-
-	isNotCrossedOut( index ) {
-		return !this.isCrossedOut( index );
-	}
-
-	isRowCrossedOut( row ) {
-		for( let i = row * this.width; i < ( row + 1 ) * this.width; i++ ) {
-			if( this.isNotCrossedOut( i ) ) {
-				return false;
-			}
+	get field() {
+		return {
+			rows: Array.from( this.getRows() )
 		}
-		return true;
 	}
 
-	isNeighbourOf( index1, index2 ) {
-		console.assert( index1 !== index2 )
-		console.assert( !this.isCrossedOut( index1 ) );
-		console.assert( !this.isCrossedOut( index2 ) );
+	isValidValue( value ) {
+		return Number.isInteger( value ) && value != 0 && -9 <= value && value <= 9;
+	}
+
+	areValuesPairable( value1, value2 ) {
+		console.assert( this.isValidValue( value1 ) );
+		console.assert( this.isValidValue( value2 ) );
+
+		return value1 === value2 || value1 + value2 === 10;
+	}
+
+	areCellsNeighbouring( index1, index2 ) {
+		console.assert( this.isValidCellIndex( index1 ) );
+		console.assert( this.isValidCellIndex( index2 ) );
+
+		// A cell is not a neighbour of itself
+		if( index1 === index2 ) {
+			return false;
+		}
 
 		// Make sure index1 is smaller than index2
 		if( index1 > index2 ) {
@@ -85,14 +133,14 @@ export default class Game {
 		if( remainder === 0 ) {
 			// Cells are in the same column; check all cells that are vertically in between
 			for( let i = index1 + this.width; i < index2; i += this.width ) {
-				if( !this.isCrossedOut( i ) ) {
+				if( this.isCellPairable( i ) ) {
 					return false;
 				}
 			}
 		} else {
 			// Cells might be direct neighbours or horizontally adjacent with crossed out cells in between
 			for( let i = index1 + 1; i < index2; i++ ) {
-				if( !this.isCrossedOut( i ) ) {
+				if( this.isCellPairable( i ) ) {
 					return false;
 				}
 			}
@@ -101,28 +149,33 @@ export default class Game {
 		return true;
 	}
 
-	canValuesBeCrossedOut( val1, val2 ) {
-		return val1 === val2 || val1 + val2 === 10;
+	areCellsPairable( index1, index2 ) {
+		console.assert( this.isValidCellIndex( index1 ) );
+		console.assert( this.isValidCellIndex( index2 ) );
+		console.assert( index1 !== index2, "A cell cannot be crossed out with itself!" );
+
+		return this.isCellPairable( index1 ) &&
+			this.isCellPairable( index2 ) &&
+			this.areValuesPairable( this.getCellNumber( index1 ), this.getCellNumber( index2 ) ) &&
+			this.areCellsNeighbouring( index1, index2 );
 	}
 
-	getRowByCellIndex( index ) {
-		console.assert( typeof this.field[index] !== 'undefined' )
+	pairCells( index1, index2 ) {
+		console.assert( this.areCellsPairable( index1, index2 ) )
 
-		return Math.floor( index / this.width );
-	}
-
-	removeRow( row ) {
-		console.assert( this.isRowCrossedOut( row ) );
-
-		this.field.splice( row * this.width, this.width );
+		// cross out cells
+		this.markCellAsPaired( index1 );
+		this.markCellAsPaired( index2 );
 	}
 
 	extendField() {
-		this.field = this.field.concat( this.field.filter( ( val, index ) => this.isNotCrossedOut( index ) ) );
+		this.cells = this.cells.concat(
+			this.cells.filter( ( val, index ) => this.isCellPairable( index ) )
+		);
 	}
 
 	isFinished() {
-		return this.field.every( (val, index) => this.isCrossedOut( index ) );
+		return this.cells.every( ( val, index ) => this.isCellPaired( index ) );
 	}
 }
 

@@ -22,16 +22,6 @@ body {
 	font-weight: 900;
 }
 
-.field {
-	display: grid;
-	grid-template-columns: repeat(9, 1fr);
-	grid-column-gap: 0.2rem;
-	grid-row-gap: 0.2rem;
-
-	padding: 0.4rem;
-	margin-bottom: 1rem;
-}
-
 .btn-extend-field {
 	@include btn;
 

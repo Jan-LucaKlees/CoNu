@@ -6,7 +6,7 @@ import './scss/main.scss';
 
 import Game from './Game';
 
-import Cell from './Cell'
+import Field from './Field';
 
 
 WebFont.load({
@@ -18,48 +18,53 @@ WebFont.load({
 class App extends React.PureComponent {
 	constructor( props ) {
 		super( props );
+
+		this.game = new Game();
+
 		this.state = {
-			game: new Game(),
+			field: this.game.field,
 			selectedCell: null,
 			finished: false
 		}
 	}
-	selectCell( fieldIndex ) {
-		if( this.state.selectedCell !== null && this.state.game.canCellsBeCrossedOut( this.state.selectedCell, fieldIndex ) ){
-			this.state.game.crossOut( this.state.selectedCell, fieldIndex );
+	onSelectCell( index ) {
+		if( this.state.selectedCell !== null && this.game.areCellsPairable( this.state.selectedCell, index ) ){
+			this.game.pairCells( this.state.selectedCell, index );
 			this.setState({
+				field: this.game.field,
 				selectedCell: null,
-				finished: this.state.game.isFinished()
+				finished: this.game.isFinished()
 			});
 		} else {
-			this.setState({ selectedCell: fieldIndex });
+			this.setState({ selectedCell: index });
 		}
 	}
 	extendField() {
-		this.state.game.extendField();
-		this.forceUpdate();
+		this.game.extendField();
+		this.setState({ field: this.game.field });
 	}
 	render() {
 		return (
 			<main className="main">
+
 				<header>
 					<h1 className="title">CoNu</h1>
 				</header>
+
 				{ this.state.finished && <h2>You won!</h2> }
-				<div className="field">
-					{ this.state.game.map( ( number, index ) => <Cell
-						key={ index }
-						number={ Math.abs( number ) }
-						onClick={ () => this.selectCell( index ) }
-						crossedOut={ number < 0 }
-						selected={ this.state.selectedCell == index }/> ) }
-				</div>
+
+				<Field
+					state={ this.state.field }
+					selectedCell={ this.state.selectedCell }
+					onSelectCell={ ( index ) => this.onSelectCell( index ) } />
+
 				<button
 					className="btn-extend-field"
 					disabled={ this.state.finished }
 					onClick={ () => this.extendField() }>
 					Extend
 				</button>
+
 			</main>
 		);
 	}
