@@ -20,5 +20,9 @@
 	@include btn;
 
 	padding: 0.25rem 0;
+
+	transition-properties: color, border-color, background-color;
+	transition-timing-function: ease-out;
+	transition-duration: .3s;
 }
 
