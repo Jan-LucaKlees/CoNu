@@ -1,9 +1,9 @@
 import React from 'react';
 import c from 'classnames'
 
-const Cell = ({ number, crossedOut, selected, onClick }) =>
+const Cell = ({ number, paired, selected, onClick }) =>
 	<button
-		className={ c( 'cell', { 'active': selected, 'disabled': crossedOut } ) }
+		className={ c( 'cell', { 'active': selected, 'disabled': paired } ) }
 		onClick={ onClick }>
 		{ number }
 	</button>;

@@ -1,0 +1,24 @@
+@import './mixins';
+
+.field {
+	display: flex;
+	flex-direction: column;
+
+	padding: 0.4rem;
+	margin-bottom: 1rem;
+}
+
+.row {
+	display: grid;
+	grid-template-columns: repeat( 9, 1fr );
+	grid-column-gap: 0.2rem;
+
+	padding: 0.1rem;
+}
+
+.cell {
+	@include btn;
+
+	padding: 0.25rem 0;
+}
+
