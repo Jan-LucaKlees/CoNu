@@ -86,14 +86,6 @@ body {
   font-family: "Sarpanch", sans-serif;
   font-weight: 900; }
 
-.field {
-  display: grid;
-  grid-template-columns: repeat(9, 1fr);
-  grid-column-gap: 0.2rem;
-  grid-row-gap: 0.2rem;
-  padding: 0.4rem;
-  margin-bottom: 1rem; }
-
 .btn-extend-field {
   height: 3.7rem;
   padding: 0.25rem 0.75rem;
@@ -116,6 +108,30 @@ body {
     background-color: #ebedef;
     color: #a8a9ab; }
 
+.field {
+  display: flex;
+  flex-direction: column;
+  padding: 0.4rem;
+  margin-bottom: 1rem; }
+
+.row {
+  display: grid;
+  grid-template-columns: repeat(9, 1fr);
+  grid-column-gap: 0.2rem;
+  overflow: hidden;
+  transition-properties: height, opacity;
+  transition-timing-function: ease-in;
+  transition-duration: .3s; }
+  .row-exit {
+    height: 3.9rem;
+    opacity: 1; }
+  .row-exit-active {
+    height: 0;
+    opacity: 0; }
+
+.cell-wrapper {
+  padding: 0.1rem 0; }
+
 .cell {
   height: 3.7rem;
   padding: 0.25rem 0.75rem;
@@ -130,7 +146,11 @@ body {
   background-color: #fdfeff;
   overflow: hidden;
   cursor: pointer;
-  padding: 0.25rem 0; }
+  width: 100%;
+  padding: 0.25rem 0;
+  transition-properties: color, border-color, background-color;
+  transition-timing-function: ease-out;
+  transition-duration: .3s; }
   .cell:active, .cell.active {
     background-color: #babcf0; }
   .cell:disabled, .cell.disabled {
