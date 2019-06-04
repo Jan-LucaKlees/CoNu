@@ -15,8 +15,9 @@ jobs:
             - "node_modules"
       - run:
           name: Running tests
-          command: npm run test
-      - store_artifacts:
-          path: test-reports/
-          destination: jest
+          command: npm run test -- --ci --reporters=default --reporters=jest-junit
+          environment:
+              JEST_JUNIT_OUTPUT: "reports/junit/js-test-results.xml"
+      - store_test_results:
+          path: reports/junit
 
