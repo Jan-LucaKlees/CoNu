@@ -4,9 +4,10 @@
   "description": "A game about connecting numbers.",
   "main": "index.html",
   "scripts": {
-    "test": "jest --watch",
-    "dev": "webpack-dev-server --config ./webpack.config.js --mode development --devtool source-map",
-    "build": "webpack --config ./webpack.config.js --mode production"
+    "test": "jest",
+    "build": "webpack --config ./webpack.config.js --mode production",
+    "dev-test": "jest --watch",
+    "dev-server": "webpack-dev-server --config ./webpack.config.js --mode development --devtool source-map"
   },
   "author": "Jan-Luca Klees",
   "license": "GNU GPLv3",
