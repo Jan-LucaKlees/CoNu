@@ -5,7 +5,7 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 
 
 const base = {
-	entry: './src/App.jsx',
+	entry: './src/CoNu.jsx',
 	module: {
 		rules: [
 			{
@@ -46,6 +46,10 @@ module.exports = (env, argv) => {
 			},
 			plugins: [
 				new webpack.HotModuleReplacementPlugin(),
+				new webpack.DefinePlugin({
+					HOSTNAME: JSON.stringify("localhost:8080"),
+					DEV_SERVER: argv['$0'].includes('webpack-dev-server')
+				})
 			],
 			devServer: {
 				contentBase: './docs',
@@ -65,6 +69,10 @@ module.exports = (env, argv) => {
 			plugins: [
 				new MiniCssExtractPlugin({
 					filename: 'bundle.[contenthash].css'
+				}),
+				new webpack.DefinePlugin({
+					HOSTNAME: JSON.stringify( env && env.PREVIEW ? "localhost:5000" : "conu.app" ),
+					DEV_SERVER: argv['$0'].includes('webpack-dev-server')
 				})
 			],
 			output: {

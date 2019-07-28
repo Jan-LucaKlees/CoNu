@@ -1,5 +1,4 @@
 @mixin btn {
-	height: 3.7rem;
 	padding: 0.25rem 0.75rem;
 
 	border-width: 0.2rem;
@@ -14,7 +13,6 @@
 
 	background-color: #fdfeff;
 
-	overflow: hidden;
 	cursor: pointer;
 
 	&:active,
@@ -28,4 +26,11 @@
 		background-color: #ebedef;
 		color: #a8a9ab;
 	}
+}
+
+@mixin btn-single-line {
+	@include btn;
+
+	height: 3.7rem;
+	overflow: hidden;
 }
