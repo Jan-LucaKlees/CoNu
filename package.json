@@ -6,6 +6,7 @@
   "scripts": {
     "test": "jest",
     "build": "rm -rf docs && webpack --config ./webpack.config.js --mode production",
+    "preview": "rm -rf docs && webpack --config ./webpack.config.js --mode production --env.PREVIEW=true && firebase serve --only hosting",
     "dev-test": "jest --watch",
     "dev-server": "webpack-dev-server --config ./webpack.config.js --mode development --devtool source-map"
   },
