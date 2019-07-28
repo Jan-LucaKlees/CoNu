@@ -80,3 +80,7 @@ typings/
 
 # test reports
 reports/
+
+# Firebase stuff
+.firebase/
+

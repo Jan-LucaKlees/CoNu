@@ -20,7 +20,7 @@ const base = {
 			'title': 'CoNu - Connect the Numbers!',
 			'template': 'src/index.html',
 			'xhtml': true,
-			'base': '/conu/',
+			'base': '/',
 		})
   ],
 	resolve: {
@@ -28,7 +28,7 @@ const base = {
 	},
 	output: {
 		path: __dirname + '/docs',
-		publicPath: '/conu/',
+		publicPath: '/',
 		filename: 'bundle.js'
 	}
 };
