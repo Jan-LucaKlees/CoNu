@@ -1,6 +1,6 @@
 {
   "name": "CoNu",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "A game about connecting numbers.",
   "main": "index.html",
   "scripts": {
