@@ -5,7 +5,7 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 
 
 const base = {
-	entry: './src/App.jsx',
+	entry: './src/CoNu.jsx',
 	module: {
 		rules: [
 			{
