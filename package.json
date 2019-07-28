@@ -1,12 +1,13 @@
 {
   "name": "CoNu",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "A game about connecting numbers.",
   "main": "index.html",
   "scripts": {
     "test": "jest",
-    "build": "rm -rf docs && webpack --config ./webpack.config.js --mode production",
-    "preview": "rm -rf docs && webpack --config ./webpack.config.js --mode production --env.PREVIEW=true && firebase serve --only hosting",
+    "build": "rm -rf public && webpack --config ./webpack.config.js --mode production",
+    "preview": "npm run build -- --env.PREVIEW=true && firebase serve --only hosting",
+    "deploy": "npm run test && npm run build && firebase deploy",
     "dev-test": "jest --watch",
     "dev-server": "webpack-dev-server --config ./webpack.config.js --mode development --devtool source-map"
   },

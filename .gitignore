@@ -83,4 +83,5 @@ reports/
 
 # Firebase stuff
 .firebase/
+public/
 
