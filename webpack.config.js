@@ -27,7 +27,7 @@ const base = {
 		extensions: ['*', '.js', '.jsx', '.scss']
 	},
 	output: {
-		path: __dirname + '/docs',
+		path: __dirname + '/public',
 		publicPath: '/',
 		filename: 'bundle.js'
 	}
@@ -52,7 +52,7 @@ module.exports = (env, argv) => {
 				})
 			],
 			devServer: {
-				contentBase: './docs',
+				contentBase: './public',
 				hot: true
 			}
 		});
