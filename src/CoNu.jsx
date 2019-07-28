@@ -5,6 +5,7 @@ import WebFont from 'webfontloader';
 import './scss/main.scss';
 
 import Game from './Game';
+import RedirectNotice from './RedirectNotice';
 
 
 WebFont.load({
@@ -22,7 +23,7 @@ class CoNu extends React.PureComponent {
 					<h1 className="title">CoNu</h1>
 				</header>
 
-				<Game />
+				<RedirectNotice />
 
 			</main>
 		);

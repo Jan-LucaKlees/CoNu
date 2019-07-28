@@ -1,0 +1,15 @@
+.redirect-notice {
+	.header {
+		margin-bottom: 1rem;
+	}
+
+	.notice {
+		margin-bottom: 1rem
+	}
+
+	.redirect-btn {
+		@include btn;
+	}
+}
+
+
