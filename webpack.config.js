@@ -71,7 +71,7 @@ module.exports = (env, argv) => {
 					filename: 'bundle.[contenthash].css'
 				}),
 				new webpack.DefinePlugin({
-					HOSTNAME: JSON.stringify("conu.app"),
+					HOSTNAME: JSON.stringify( env && env.PREVIEW ? "localhost:5000" : "conu.app" ),
 					DEV_SERVER: argv['$0'].includes('webpack-dev-server')
 				})
 			],
