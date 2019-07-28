@@ -35,5 +35,7 @@ ReactDOM.render(
 	document.getElementById('react-root')
 );
 
-module.hot.accept();
+if( DEV_SERVER ) {
+  module.hot.accept();
+}
 
