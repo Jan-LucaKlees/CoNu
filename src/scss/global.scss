@@ -10,16 +10,40 @@ body {
 	font-family: "Share Tech Mono", monospace;
 }
 
+h2 {
+	font-size: 2rem;
+	font-weight: 900;
+}
+
+a:not(.decoration-none) {
+	text-decoration: underline;
+	color: #60617d;
+}
+
+.decoration-none {
+	text-decoration: none;
+}
+
 .main {
 	width: 100vw;
 	margin: 0 auto;
 	text-align: center;
 }
 
-.title {
-	font-size: 8rem;
+.title-font {
 	font-family: "Sarpanch", sans-serif;
+}
+
+.title {
+	@extend .title-font;
+
+	font-size: 8rem;
 	font-weight: 900;
+}
+
+.content {
+	margin-left: 0.4rem;
+	margin-right: 0.4rem;
 }
 
 .btn-extend-field {
