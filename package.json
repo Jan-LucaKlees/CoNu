@@ -15,6 +15,7 @@
   "license": "GNU GPLv3",
   "dependencies": {
     "classnames": "^2.2.6",
+    "firebase": "^6.3.3",
     "minireset.css": "0.0.5",
     "prop-types": "^15.7.2",
     "react": "^16.8.6",

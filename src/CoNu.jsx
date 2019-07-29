@@ -9,9 +9,9 @@ import UrlBasedContentSwitcher from './UrlBasedContentSwitcher';
 
 
 WebFont.load({
-  google: {
-    families: ['Share Tech Mono', 'Sarpanch:900' ],
-  }
+	google: {
+		families: ['Share Tech Mono', 'Sarpanch:900' ],
+	}
 });
 
 class CoNu extends React.PureComponent {
@@ -36,6 +36,6 @@ ReactDOM.render(
 );
 
 if( DEV_SERVER ) {
-  module.hot.accept();
+	module.hot.accept();
 }
 
