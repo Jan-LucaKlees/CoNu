@@ -1,11 +1,11 @@
 import React from 'react';
 
-import GameLoader from './GameLoader';
+import Game from './Game';
 import RedirectNotice from './RedirectNotice';
 
 
 const UrlBasedContentSwitcher = () =>
-	( window.location.host === HOSTNAME ? <GameLoader /> : <RedirectNotice /> )
+	( window.location.host === HOSTNAME ? <Game /> : <RedirectNotice /> )
 
 export default UrlBasedContentSwitcher;
 

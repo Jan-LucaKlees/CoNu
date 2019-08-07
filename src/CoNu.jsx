@@ -4,7 +4,6 @@ import WebFont from 'webfontloader';
 
 import './scss/main.scss';
 
-import Game from './Game';
 import UrlBasedContentSwitcher from './UrlBasedContentSwitcher';
 
 

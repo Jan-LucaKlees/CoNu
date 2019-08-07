@@ -1,12 +1,8 @@
-import React from 'react';
 import * as firebase from "firebase/app";
 import "firebase/firestore";
 
-// import GameState from './GameState';
-import Game from './Game';
 
-
-var firebaseConfig = {
+const firebaseConfig = {
 	apiKey: "AIzaSyAclLIP1KzABj7LDojGZ5UaQ62xMSzmR8c",
 	authDomain: "connect-numbers.firebaseapp.com",
 	databaseURL: "https://connect-numbers.firebaseio.com",
@@ -16,17 +12,7 @@ var firebaseConfig = {
 	appId: "1:174348090247:web:3a5a6c2367d59de8"
 };
 
-export default class GameLoader extends React.PureComponent {
-	constructor( props ) {
-		super( props );
-
-		firebase.initializeApp(firebaseConfig);
-		this.db = firebase.firestore();
-	}
-	render() {
-		return (
-			<Game />
-		);
-	}
-}
+firebase.initializeApp(firebaseConfig);
+const db = firebase.firestore();
+export default db;
 
