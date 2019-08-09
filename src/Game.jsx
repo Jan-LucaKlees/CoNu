@@ -1,4 +1,5 @@
 import React from 'react';
+import { CSSTransition, TransitionGroup } from 'react-transition-group';
 import Cookies from 'js-cookie';
 import uuidv4 from 'uuid/v1';
 
@@ -15,35 +16,51 @@ export default class GameLoader extends React.PureComponent {
 			loading: true,
 			error: null,
 			cells: [],
-			selectedCell: null
 		}
 	}
 	componentDidMount() {
+		this.initializeGame();
+	}
+	initializeGame() {
+		// Getting the game id
+		// For existing games this should be found in the `gameId` cookie. If no
+		// cookie is found, we just create a new id and thus implicitly create a new
+		// game in the database.
 		this.gameId = Cookies.get( 'gameId' ) || uuidv4();
+
 		this.gameRef = db.collection( 'games' ).doc( this.gameId );
 
+		// Initialize a new game using a transaction
+		// using a transaction makes creating a new game easier, preventing a small
+		// callback hell.
+		// We only need this for new games, not yet existing in the database. For
+		// existing games, there is nothing happening here.
 		db.runTransaction( ( transaction ) => {
 			return transaction.get( this.gameRef ).then( ( game ) => {
+				// Create the game with the default values if it does not exist
 				if (!game.exists) {
-					this.gameState = new GameState();
 					transaction.set( this.gameRef, {
 						cells: GameState.DEFAULT_START_VALUES,
 					} );
 				}
 
+				// Workaround for already existing games, with no writes to read games,
+				// FireStore will throw an error.
 				transaction.update( this.gameRef, {});
 			});
 		}).then( () => {
+			// Only when the game is successfully initialized we set the cookie.
+			// Otherwise the user might have a cookie set for a game that was not
+			// correctly initialized and perhaps does not exist in the database.
 			Cookies.set( 'gameId', this.gameId );
 
-			this.state.loading = false;
-
+			// Register the snapshot listener listening for new game states
 			this.gameRef.onSnapshot( ( gameSnapshot ) => {
 				this.setState( {
+					loading: false,
 					cells: gameSnapshot.data().cells
 				} )
 			} );
-
 		}).catch( ( error ) => {
 			this.setState({
 				loading: false,
@@ -51,28 +68,21 @@ export default class GameLoader extends React.PureComponent {
 			})
 		});
 	}
-	onSelectCell( index ) {
-		let gameState = this.getGameState();
-		if( this.state.selectedCell !== null && gameState.areCellsPairable( this.state.selectedCell, index ) ){
-			gameState.pairCells( this.state.selectedCell, index );
-			this.setState.selectedCell = null;
-			this.updateCells( gameState.cells );
-		} else {
-			this.setState({ selectedCell: index });
-		}
-	}
-	onExtendField() {
-		let gameState = this.getGameState();
-		gameState.extendField();
-		this.updateCells( gameState.cells );
-	}
-	updateCells( cells ) {
+	onChange( newCells ) {
 		this.gameRef.update({
-			cells: cells
+			cells: newCells
 		})
 	}
-	getGameState() {
-		return new GameState( this.state.cells );
+	onStartNewGame() {
+		Cookies.remove( 'gameId' );
+
+		this.setState({
+			loading: true,
+			error: null,
+			cells: [],
+		});
+
+		this.initializeGame();
 	}
 	render() {
 		if( this.state.loading ) {
@@ -80,40 +90,119 @@ export default class GameLoader extends React.PureComponent {
 		} else if( this.state.error ) {
 			return "error: " + this.state.error
 		} else {
-			return <Game
-				cells={ this.state.cells }
-				selectedCell={ this.state.selectedCell }
-				onSelectCell={ ( index ) => this.onSelectCell( index ) }
-				onExtendField={ () => this.onExtendField() } />
+			return (
+				<Game
+					cells={ this.state.cells }
+					onChange={ ( newCells ) => this.onChange( newCells ) }
+					onStartNewGame={ () => this.onStartNewGame() } />
+			);
 		}
 	}
 }
 
-const Game = ( { cells, selectedCell, onSelectCell, onExtendField } ) => {
+class Game extends React.PureComponent {
 
-	let gameState = new GameState( cells );
+	constructor( props ) {
+		super( props );
 
-	return (
-		<div className="game">
+		this.rollOverAnimationDuration = 400;
 
-			{ gameState.isFinished() ? (
-				<h2>You won!</h2>
-			) : (
-				<Field
-					state={ gameState.field }
-					selectedCell={ selectedCell }
-					onSelectCell={ onSelectCell } />
-			)}
+		this.gameState = new GameState( props.cells );
 
-			<button
-				className="btn-extend-field"
-				disabled={ gameState.isFinished() }
-				onClick={ () => onExtendField() }>
-				Extend
-			</button>
+		this.state = {
+			finished: this.gameState.isFinished(),
+			waitingForFieldToCollapse: false,
+			watiginForWonMessageToShow: false,
+			selectedCell: null
+		}
+	}
+	componentDidUpdate( prevProps ) {
+		// Update the game states cells; yes, this is hacky
+		this.gameState.cells = this.props.cells;
 
-		</div>
-	);
+		if( this.gameState.isFinished() && !this.state.finished ) {
+			this.setState({
+				finished: true,
+				waitingForFieldToCollapse: true,
+				watiginForWonMessageToShow: true,
+			});
+
+			setTimeout( () => {
+				this.setState({
+					waitingForFieldToCollapse: false,
+				});
+			}, 300);
+
+			setTimeout( () => {
+				this.setState({
+					watiginForWonMessageToShow: false,
+				});
+			}, 1000);
+		}
+	}
+	onSelectCell( index ) {
+		if(
+			this.state.selectedCell !== null &&
+			this.gameState.areCellsPairable( this.state.selectedCell, index )
+		){
+			this.gameState.pairCells( this.state.selectedCell, index );
+			this.props.onChange( this.gameState.cells );
+		} else {
+			this.setState({
+				selectedCell: index
+			});
+		}
+	}
+	onExtendField() {
+		this.gameState.extendField();
+		this.props.onChange( this.gameState.cells );
+	}
+	render() {
+		return (
+			<div className="game">
+
+				{ this.state.finished && !this.state.waitingForFieldToCollapse ? (
+					<h2 className="field won-message">You Won!</h2>
+				) : (
+					<Field
+						state={ this.gameState.field }
+						selectedCell={ this.state.selectedCell }
+						onSelectCell={ ( index ) => this.onSelectCell( index ) } />
+				) }
+
+				<TransitionGroup className="btn-roll-over">
+					{ this.state.finished && !this.state.watiginForWonMessageToShow ? (
+						<CSSTransition
+							key="new-game"
+							timeout={ this.rollOverAnimationDuration }
+							classNames="roller" >
+							<div className="roller">
+								<button
+									className="btn-roll-over-face"
+									onClick={ () => this.props.onStartNewGame() }>
+									New Game
+								</button>
+							</div>
+						</CSSTransition>
+					) : (
+						<CSSTransition
+							key="extend"
+							timeout={ this.rollOverAnimationDuration }
+							classNames="roller" >
+							<div className="roller">
+								<button
+									className="btn-roll-over-face"
+									disabled={ this.state.finished }
+									onClick={ () => this.onExtendField() }>
+									Extend
+								</button>
+							</div>
+						</CSSTransition>
+					) }
+				</TransitionGroup>
+
+			</div>
+		);
+	}
 }
-
 

@@ -15,6 +15,10 @@
 
 	cursor: pointer;
 
+	transition-properties: color, border-color, background-color;
+	transition-timing-function: ease-out;
+	transition-duration: .3s;
+
 	&:active,
 	&.active {
 		background-color: #babcf0;
@@ -28,9 +32,11 @@
 	}
 }
 
+$btn-single-line-height: 3.7rem;
 @mixin btn-single-line {
 	@include btn;
 
-	height: 3.7rem;
+	height: $btn-single-line-height;
 	overflow: hidden;
 }
+

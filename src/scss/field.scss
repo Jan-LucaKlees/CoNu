@@ -1,17 +1,29 @@
 @import './mixins';
 
+$cell-width: 2.511rem;
+$cell-h-spacing: 0.2rem;
+$cell-v-spacing: 0.2rem;
+$row-height: $btn-single-line-height + $cell-v-spacing;
+
 .field {
 	display: flex;
 	flex-direction: column;
+	justify-content: center;
 
-	padding: 0.4rem;
+	$field-padding: 0.4rem;
+	padding: $field-padding;
+
 	margin-bottom: 1rem;
+
+	min-height: $row-height * 2 + $field-padding *2;
 }
 
 .row {
 	display: grid;
 	grid-template-columns: repeat( 9, 1fr );
-	grid-column-gap: 0.2rem;
+	grid-column-gap: $cell-h-spacing;
+
+	height: $row-height;
 
 	overflow: hidden;
 
@@ -20,7 +32,7 @@
 	transition-duration: .3s;
 
 	&-exit {
-		height: 3.9rem;
+		height: $row-height;
 		opacity: 1;
 	}
 
@@ -31,7 +43,7 @@
 }
 
 .cell-wrapper {
-	padding: 0.1rem 0;
+	padding: $cell-v-spacing / 2 0;
 }
 
 .cell {
@@ -43,5 +55,83 @@
 	transition-properties: color, border-color, background-color;
 	transition-timing-function: ease-out;
 	transition-duration: .3s;
+}
+
+.btn-roll-over {
+	position: relative;
+	perspective: 800px;
+
+	margin-top: 1rem;
+	margin-bottom: 2rem;
+
+	width: $cell-width * 5 + $cell-v-spacing * 4;
+	height: $btn-single-line-height;
+
+	display: inline-block;
+
+	.roller {
+		position: absolute;
+		top: 0;
+		left: 0;
+		right: 0;
+
+		$transform-height: -$btn-single-line-height / 2;
+
+		transform-style: preserve-3d;
+		transform: translateZ( $transform-height );
+
+		transition-properties: transform;
+		transition-timing-function: cubic-bezier(.54,.08,.39,1.41);
+		transition-duration: .4s;
+
+		&-enter {
+			transform: translateZ( $transform-height ) rotateX(  90deg);
+			z-index: 0;
+		}
+
+		&-enter-active {
+			transform: translateZ( $transform-height ) rotateY(   0deg);
+			z-index: 1;
+		}
+
+		&-exit {
+			transform: translateZ( $transform-height ) rotateY(   0deg );
+			z-index: 1;
+		}
+
+		&-exit-active {
+			transform: translateZ( $transform-height ) rotateX( -90deg );
+			z-index: 0;
+		}
+
+		.btn-roll-over-face {
+			@include btn-single-line;
+
+			width: 100%;
+
+			transform: translateZ( $transform-height * -1 );
+		}
+	}
+}
+
+.won-message {
+	margin-top: 0.5rem;
+	margin-bottom: 0.5rem;
+
+	font-size: 3.5rem;
+	font-weight: bold;
+
+	animation: .2s won-message cubic-bezier(0.075, 0.82, 0.165, 1) 1 forwards;
+}
+
+@keyframes won-message {
+	0% {
+		opacity: 0;
+		transform: scale(0);
+	}
+	100% {
+		opacity: 1;
+		transform: scale(1);
+	}
 }
 
