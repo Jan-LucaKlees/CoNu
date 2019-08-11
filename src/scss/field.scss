@@ -46,8 +46,8 @@ $row-height: $btn-single-line-height + $cell-v-spacing;
 	padding: $cell-v-spacing / 2 0;
 }
 
-.cell {
-	@include btn-single-line;
+.btn--cell {
+	@extend .btn--single-line;
 
 	width: 100%;
 	padding: 0.25rem 0;
@@ -57,12 +57,12 @@ $row-height: $btn-single-line-height + $cell-v-spacing;
 	transition-duration: .3s;
 }
 
-.btn-new-game {
-	@include btn-single-line;
+.btn--new-game {
+	@extend .btn--single-line;
 
 	width: $cell-width * 5 + $cell-v-spacing * 4;
 
-	margin-bottom: 2.15rem;
+	margin-bottom: 2rem;
 }
 
 .btn-roll-over {
@@ -113,7 +113,7 @@ $row-height: $btn-single-line-height + $cell-v-spacing;
 		}
 
 		.btn-roll-over-face {
-			@include btn-single-line;
+			@extend .btn--single-line;
 
 			width: 100%;
 

@@ -2,6 +2,7 @@ import React from 'react';
 
 import StyledName from './StyledName';
 import StyledLink from './StyledLink';
+import Btn from './Btn';
 
 
 const OfficialURLNotice = () =>
@@ -14,9 +15,9 @@ const OfficialURLNotice = () =>
 		</p>
 
 		<a href="https://conu.app/" className="decoration-none">
-			<button className="redirect-btn">
+			<Btn>
 					Play at <StyledName />.app
-			</button>
+			</Btn>
 		</a>
 
 	</div>

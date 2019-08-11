@@ -1,13 +1,16 @@
 import React from 'react';
 import c from 'classnames'
 
+import { BtnSingleLine } from './Btn';
+
+
 const Cell = ({ number, paired, selected, onClick }) =>
 	<div className="cell-wrapper">
-		<button
-			className={ c( 'cell', { 'active': selected, 'disabled': paired } ) }
+		<BtnSingleLine
+			className={ c( 'btn--cell', { 'active': selected, 'disabled': paired } ) }
 			onClick={ onClick }>
 			{ number }
-		</button>
+		</BtnSingleLine>
 	</div>
 
 export default Cell;
