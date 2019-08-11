@@ -161,6 +161,12 @@ class Game extends React.PureComponent {
 		return (
 			<div className="game">
 
+				<button
+					className="btn-new-game"
+					onClick={ () => this.props.onStartNewGame() }>
+					New Game
+				</button>
+
 				{ this.state.finished && !this.state.waitingForFieldToCollapse ? (
 					<h2 className="field won-message">You Won!</h2>
 				) : (

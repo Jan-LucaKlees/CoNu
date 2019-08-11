@@ -57,6 +57,14 @@ $row-height: $btn-single-line-height + $cell-v-spacing;
 	transition-duration: .3s;
 }
 
+.btn-new-game {
+	@include btn-single-line;
+
+	width: $cell-width * 5 + $cell-v-spacing * 4;
+
+	margin-bottom: 2.15rem;
+}
+
 .btn-roll-over {
 	position: relative;
 	perspective: 800px;
