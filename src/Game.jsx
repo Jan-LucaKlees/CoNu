@@ -168,14 +168,16 @@ class Game extends React.PureComponent {
 					New Game
 				</BtnSingleLine>
 
-				{ this.state.finished && !this.state.waitingForFieldToCollapse ? (
-					<h2 className="field won-message">You Won!</h2>
-				) : (
-					<Field
-						state={ this.gameState.field }
-						selectedCell={ this.state.selectedCell }
-						onSelectCell={ ( index ) => this.onSelectCell( index ) } />
-				) }
+				<div className="game__content">
+					{ this.state.finished && !this.state.waitingForFieldToCollapse ? (
+						<h2 className="game__won-message">You Won!</h2>
+					) : (
+						<Field
+							state={ this.gameState.field }
+							selectedCell={ this.state.selectedCell }
+							onSelectCell={ ( index ) => this.onSelectCell( index ) } />
+					) }
+				</div>
 
 				<TransitionGroup className="btn-roll-over">
 					{ this.state.finished && !this.state.watiginForWonMessageToShow ? (

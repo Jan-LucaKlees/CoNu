@@ -16,10 +16,10 @@ WebFont.load({
 class CoNu extends React.PureComponent {
 	render() {
 		return (
-			<main className="main">
+			<main className="conu">
 
 				<header>
-					<h1 className="title">CoNu</h1>
+					<h1 className="conu__title">CoNu</h1>
 				</header>
 
 				<UrlBasedContentSwitcher />

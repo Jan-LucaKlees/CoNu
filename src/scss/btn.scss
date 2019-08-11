@@ -22,12 +22,12 @@ $btn-single-line-height: 3.7rem;
 	transition-duration: .3s;
 
 	&:active,
-	&.active {
+	&--active {
 		background-color: #babcf0;
 	}
 
 	&:disabled,
-	&.disabled {
+	&--disabled {
 		border-color: #a8a9ab;
 		background-color: #ebedef;
 		color: #a8a9ab;

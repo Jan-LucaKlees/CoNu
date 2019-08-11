@@ -1,0 +1,92 @@
+.game {
+	.game__content {
+		display: flex;
+		flex-direction: column;
+		justify-content: center;
+
+		margin-bottom: 2rem;
+
+		min-height: $row-height * 2;
+	}
+	.game__won-message {
+		font-size: 3.5rem;
+
+		animation: .2s won-message cubic-bezier(0.075, 0.82, 0.165, 1) 1 forwards;
+
+		@keyframes won-message {
+			0% {
+				opacity: 0;
+				transform: scale(0);
+			}
+			100% {
+				opacity: 1;
+				transform: scale(1);
+			}
+		}
+	}
+}
+
+.btn--new-game {
+	@extend .btn--single-line;
+
+	width: $cell-width * 5 + $cell-v-spacing * 4;
+
+	margin-bottom: 2rem;
+}
+
+.btn-roll-over {
+	position: relative;
+	perspective: 800px;
+
+	margin-bottom: 2rem;
+
+	width: $cell-width * 5 + $cell-v-spacing * 4;
+	height: $btn-single-line-height;
+
+	display: inline-block;
+
+	.roller {
+		position: absolute;
+		top: 0;
+		left: 0;
+		right: 0;
+
+		$transform-height: -$btn-single-line-height / 2;
+
+		transform-style: preserve-3d;
+		transform: translateZ( $transform-height );
+
+		transition-properties: transform;
+		transition-timing-function: cubic-bezier(.54,.08,.39,1.41);
+		transition-duration: .4s;
+
+		&-enter {
+			transform: translateZ( $transform-height ) rotateX(  90deg);
+			z-index: 0;
+		}
+
+		&-enter-active {
+			transform: translateZ( $transform-height ) rotateY(   0deg);
+			z-index: 1;
+		}
+
+		&-exit {
+			transform: translateZ( $transform-height ) rotateY(   0deg );
+			z-index: 1;
+		}
+
+		&-exit-active {
+			transform: translateZ( $transform-height ) rotateX( -90deg );
+			z-index: 0;
+		}
+
+		.btn-roll-over-face {
+			@extend .btn--single-line;
+
+			width: 100%;
+
+			transform: translateZ( $transform-height * -1 );
+		}
+	}
+}
+

@@ -1,0 +1,18 @@
+$conu-padding: 0.4rem;
+
+.conu {
+	width: 100vw;
+	margin: 0 auto;
+	text-align: center;
+
+	padding-left: $conu-padding;
+	padding-right: $conu-padding;
+
+	&__title {
+		@extend .title-font;
+
+		font-size: 8rem;
+		font-weight: 900;
+	}
+}
+

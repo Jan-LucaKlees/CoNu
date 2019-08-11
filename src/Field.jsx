@@ -12,7 +12,7 @@ const Field = ({ state, selectedCell, onSelectCell }) =>
 				<CSSTransition
 					key={ row.index }
 					timeout={ 300 }
-					classNames="row"
+					classNames="field__row"
 				>
 					<Row
 						key={ row.index }

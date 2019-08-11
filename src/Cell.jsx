@@ -5,9 +5,10 @@ import { BtnSingleLine } from './Btn';
 
 
 const Cell = ({ number, paired, selected, onClick }) =>
-	<div className="cell-wrapper">
+	<div className="field__cell-wrapper">
 		<BtnSingleLine
-			className={ c( 'btn--cell', { 'active': selected, 'disabled': paired } ) }
+			className={ c( 'btn--cell', { 'btn--active': selected } ) }
+			disabled={ paired }
 			onClick={ onClick }>
 			{ number }
 		</BtnSingleLine>
