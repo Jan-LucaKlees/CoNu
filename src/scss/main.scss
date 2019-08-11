@@ -3,7 +3,39 @@
 @import './variables';
 @import './mixins';
 
-@import './global';
+@import './btn';
+@import './conu';
 @import './field';
+@import './game';
 @import './redirect-notice';
+
+html {
+	font-size: 4vw;
+}
+
+body {
+	background-color: #ebedef;
+	width: 100vw;
+	min-height: 100vh;
+	color: #0e1111;
+	font-family: "Share Tech Mono", monospace;
+}
+
+h2 {
+	font-size: 2rem;
+	font-weight: 900;
+}
+
+a:not(.decoration-none) {
+	text-decoration: underline;
+	color: #60617d;
+}
+
+.decoration-none {
+	text-decoration: none;
+}
+
+.title-font {
+	font-family: "Sarpanch", sans-serif;
+}
 

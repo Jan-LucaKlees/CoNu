@@ -6,6 +6,7 @@ import uuidv4 from 'uuid/v1';
 import db from './db';
 import GameState from './GameState';
 import Field from './Field';
+import { BtnSingleLine } from './Btn';
 
 
 export default class GameLoader extends React.PureComponent {
@@ -161,20 +162,22 @@ class Game extends React.PureComponent {
 		return (
 			<div className="game">
 
-				<button
-					className="btn-new-game"
+				<BtnSingleLine
+					className="btn--new-game"
 					onClick={ () => this.props.onStartNewGame() }>
 					New Game
-				</button>
+				</BtnSingleLine>
 
-				{ this.state.finished && !this.state.waitingForFieldToCollapse ? (
-					<h2 className="field won-message">You Won!</h2>
-				) : (
-					<Field
-						state={ this.gameState.field }
-						selectedCell={ this.state.selectedCell }
-						onSelectCell={ ( index ) => this.onSelectCell( index ) } />
-				) }
+				<div className="game__content">
+					{ this.state.finished && !this.state.waitingForFieldToCollapse ? (
+						<h2 className="game__won-message">You Won!</h2>
+					) : (
+						<Field
+							state={ this.gameState.field }
+							selectedCell={ this.state.selectedCell }
+							onSelectCell={ ( index ) => this.onSelectCell( index ) } />
+					) }
+				</div>
 
 				<TransitionGroup className="btn-roll-over">
 					{ this.state.finished && !this.state.watiginForWonMessageToShow ? (
@@ -183,11 +186,11 @@ class Game extends React.PureComponent {
 							timeout={ this.rollOverAnimationDuration }
 							classNames="roller" >
 							<div className="roller">
-								<button
+								<BtnSingleLine
 									className="btn-roll-over-face"
 									onClick={ () => this.props.onStartNewGame() }>
 									New Game
-								</button>
+								</BtnSingleLine>
 							</div>
 						</CSSTransition>
 					) : (
@@ -196,12 +199,12 @@ class Game extends React.PureComponent {
 							timeout={ this.rollOverAnimationDuration }
 							classNames="roller" >
 							<div className="roller">
-								<button
+								<BtnSingleLine
 									className="btn-roll-over-face"
 									disabled={ this.state.finished }
 									onClick={ () => this.onExtendField() }>
 									Extend
-								</button>
+								</BtnSingleLine>
 							</div>
 						</CSSTransition>
 					) }
