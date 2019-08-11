@@ -8,6 +8,10 @@ $conu-padding: 0.4rem;
 	padding-left: $conu-padding;
 	padding-right: $conu-padding;
 
+	@include mq-mobile-landscape-up() {
+		width: $mobile-landscape-width;
+	}
+
 	&__title {
 		@extend .title-font;
 

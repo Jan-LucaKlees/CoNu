@@ -11,6 +11,10 @@
 
 html {
 	font-size: 4vw;
+
+	@include mq-mobile-landscape-up() {
+		font-size: $mobile-landscape-width * 0.04;
+	}
 }
 
 body {
@@ -19,6 +23,7 @@ body {
 	min-height: 100vh;
 	color: #0e1111;
 	font-family: "Share Tech Mono", monospace;
+	overflow-x: hidden;
 }
 
 h2 {
