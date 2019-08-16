@@ -8,7 +8,8 @@ import db from './db';
 import GameState from './GameState';
 
 import Field from './Field';
-import Btn, { BtnSingleLine } from './Btn';
+import Btn, { BtnSingleLine, BtnInvisible, BtnCuboid } from './Btn';
+import LoadingIndicator, { LoadingScreen } from './LoadingIndicator';
 
 import Logo from '../assets/images/conu-logo.svg';
 
@@ -26,6 +27,7 @@ export default class GameLoader extends React.PureComponent {
 			error: null,
 			cells: [],
 			menuCollapsed: false,
+			waitingForLoadingScreenToFade: true
 		}
 	}
 	componentDidMount() {
@@ -36,11 +38,20 @@ export default class GameLoader extends React.PureComponent {
 		// This is to hint the user where to find the 'New Game' button
 		if(
 			prevState.appLoading === true &&
-			this.state.appLoading ===false
+			this.state.appLoading === false
 		) {
 			this.collapseMenuTimeoutAfterAppLoaded = setTimeout(
-				() => this.setState( { menuCollapsed: true } )
-				, 1000 );
+				() => this.setState( {
+					menuCollapsed: true
+				} ),
+				1300
+			);
+			setTimeout(
+				() => this.setState( {
+					waitingForLoadingScreenToFade: false
+				} ),
+				300
+			);
 		}
 
 		// After the user started a new game and it is completely loaded and
@@ -48,7 +59,7 @@ export default class GameLoader extends React.PureComponent {
 		// state.
 		if(
 			prevState.newGameLoading === true &&
-			this.state.newGameLoading ===false
+			this.state.newGameLoading === false
 		) {
 			this.collapseMenuTimeoutAfterNewGameLoaded = setTimeout(
 				() => this.setState( { menuCollapsed: true } )
@@ -132,18 +143,30 @@ export default class GameLoader extends React.PureComponent {
 	}
 	render() {
 		if( this.state.appLoading ) {
-			return "loading..."
+			return <LoadingScreen key="loading-screen" />
 		} else if( this.state.error ) {
 			return "error: " + this.state.error
 		} else {
 			return (
 				<>
+					{ this.state.waitingForLoadingScreenToFade &&
+						<LoadingScreen
+							key="loading-screen"
+							faded={
+								!this.state.appLoading &&
+									this.state.waitingForLoadingScreenToFade
+							} />
+					}
+
 					<header className="conu__header">
 
-						<img
-							src={ Logo }
-							className="conu__logo"
-							onClick={ () => this.onToggleMenu() } />
+						<BtnInvisible
+							className="btn--logo"
+							onClick={ () => this.onToggleMenu() } >
+							<img
+								src={ Logo }
+								className="conu__logo" />
+						</BtnInvisible>
 
 						<nav
 							className={ c( "conu__menu-wrapper", {
@@ -161,7 +184,7 @@ export default class GameLoader extends React.PureComponent {
 					</header>
 
 					{ this.state.newGameLoading ? (
-						"Loading new game..."
+						<LoadingScreen className="loading-screen--content" />
 					) : (
 						<Game
 							cells={ this.state.cells }
@@ -179,14 +202,12 @@ class Game extends React.PureComponent {
 	constructor( props ) {
 		super( props );
 
-		this.rollOverAnimationDuration = 400;
-
 		this.gameState = new GameState( props.cells );
 
 		this.state = {
 			finished: this.gameState.isFinished(),
 			waitingForFieldToCollapse: false,
-			watiginForWonMessageToShow: false,
+			waitingForWonMessageToShow: false,
 			selectedCell: null
 		}
 	}
@@ -198,7 +219,7 @@ class Game extends React.PureComponent {
 			this.setState({
 				finished: true,
 				waitingForFieldToCollapse: true,
-				watiginForWonMessageToShow: true,
+				waitingForWonMessageToShow: true,
 			});
 
 			setTimeout( () => {
@@ -209,7 +230,7 @@ class Game extends React.PureComponent {
 
 			setTimeout( () => {
 				this.setState({
-					watiginForWonMessageToShow: false,
+					waitingForWonMessageToShow: false,
 				});
 			}, 1000);
 		}
@@ -246,36 +267,23 @@ class Game extends React.PureComponent {
 					) }
 				</div>
 
-				<TransitionGroup className="btn-roll-over">
-					{ this.state.finished && !this.state.watiginForWonMessageToShow ? (
-						<CSSTransition
-							key="new-game"
-							timeout={ this.rollOverAnimationDuration }
-							classNames="roller" >
-							<div className="roller">
-								<BtnSingleLine
-									className="btn-roll-over-face"
-									onClick={ () => this.props.onStartNewGame() }>
-									New Game
-								</BtnSingleLine>
-							</div>
-						</CSSTransition>
-					) : (
-						<CSSTransition
-							key="extend"
-							timeout={ this.rollOverAnimationDuration }
-							classNames="roller" >
-							<div className="roller">
-								<BtnSingleLine
-									className="btn-roll-over-face"
-									disabled={ this.state.finished }
-									onClick={ () => this.onExtendField() }>
-									Extend
-								</BtnSingleLine>
-							</div>
-						</CSSTransition>
-					) }
-				</TransitionGroup>
+				<BtnCuboid
+					className="btn-cuboid--cell-matching-width"
+					showFace={ this.state.finished &&
+							!this.state.waitingForWonMessageToShow ? "top" : "front" }
+					Front={(
+						<BtnSingleLine
+							disabled={ this.state.finished }
+							onClick={ () => this.onExtendField() }>
+							Extend
+						</BtnSingleLine>
+					)}
+					Top={(
+						<BtnSingleLine
+							onClick={ () => this.props.onStartNewGame() }>
+							New Game
+						</BtnSingleLine>
+					)} />
 
 			</div>
 		);

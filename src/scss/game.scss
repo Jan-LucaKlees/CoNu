@@ -26,59 +26,10 @@
 	}
 }
 
-.btn-roll-over {
-	position: relative;
-	perspective: 800px;
-
-	margin-bottom: 2rem;
-
-	width: $cell-width * 5 + $cell-v-spacing * 4;
-	height: $btn-single-line-height;
-
+.btn-cuboid--cell-matching-width {
 	display: inline-block;
 
-	.roller {
-		position: absolute;
-		top: 0;
-		left: 0;
-		right: 0;
-
-		$transform-height: -$btn-single-line-height / 2;
-
-		transform-style: preserve-3d;
-		transform: translateZ( $transform-height );
-
-		transition-properties: transform;
-		transition-timing-function: cubic-bezier(.54,.08,.39,1.41);
-		transition-duration: .4s;
-
-		&-enter {
-			transform: translateZ( $transform-height ) rotateX(  90deg);
-			z-index: 0;
-		}
-
-		&-enter-active {
-			transform: translateZ( $transform-height ) rotateY(   0deg);
-			z-index: 1;
-		}
-
-		&-exit {
-			transform: translateZ( $transform-height ) rotateY(   0deg );
-			z-index: 1;
-		}
-
-		&-exit-active {
-			transform: translateZ( $transform-height ) rotateX( -90deg );
-			z-index: 0;
-		}
-
-		.btn-roll-over-face {
-			@extend .btn--single-line;
-
-			width: 100%;
-
-			transform: translateZ( $transform-height * -1 );
-		}
-	}
+	width: $cell-width * 5 + $cell-v-spacing * 4;
+	margin-bottom: 2rem;
 }
 

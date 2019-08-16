@@ -8,6 +8,7 @@
 @import './field';
 @import './game';
 @import './redirect-notice';
+@import './loading-indicator';
 
 html {
 	font-size: 4vw;
@@ -19,8 +20,6 @@ html {
 
 body {
 	background-color: #ebedef;
-	width: 100vw;
-	min-height: 100vh;
 	color: #0e1111;
 	font-family: "Share Tech Mono", monospace;
 	overflow-x: hidden;
