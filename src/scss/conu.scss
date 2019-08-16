@@ -22,6 +22,64 @@ $conu-padding: 0.4rem;
 	&__logo {
 		width: 7.9rem;
 		height: 7.9rem;
+
+		cursor: pointer;
+
+		&--not-interactive {
+			cursor: initial;
+		}
 	}
+
+	&__menu-wrapper {
+		position: relative;
+
+		width: 12rem;
+		overflow: hidden;
+
+		transition-property: width, opacity;
+		transition-duration: .3s;
+		transition-timing-function: ease-out;
+
+		&--collapsed {
+			width: 0;
+			opacity: 0;
+
+			transition-timing-function: ease-in;
+		}
+	}
+}
+
+.menu {
+	position: absolute;
+	top: 0;
+	right: 0;
+
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+
+	width: 12rem;
+	height: 7.9rem;
+	padding: 1rem;
+
+	text-align: left;
+}
+
+.btn--menu-item {
+	font-size: 1.5rem;
+
+		// &:before {
+		// 	content: "";
+		// 	display: inline-block;
+    //
+		// 	width: 0.6em;
+		// 	height: 0.6em;
+		// 	margin-right: 0.05em;
+		// 	margin-bottom: 0.03em;
+    //
+		// 	background-image: url( ../../assets/images/arrow.svg );
+		// 	background-size: 100% 100%;
+		// 	background-repeat: no-repeat;
+		// }
 }
 

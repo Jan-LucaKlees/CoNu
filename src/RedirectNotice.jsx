@@ -2,23 +2,33 @@ import React from 'react';
 
 import Btn from './Btn';
 
+import Logo from '../assets/images/conu-logo.svg';
+
 
 const RedirectNotice = () =>
-	<div className="redirect-notice">
+	<>
+		<header className="conu__header">
+			<img
+				src={ Logo }
+				className="conu__logo conu__logo--not-interactive" />
+		</header>
 
-		<h2 className="redirect-notice__header">It's official!</h2>
+		<div className="redirect-notice">
 
-		<p className="redirect-notice__text">
-			Conu moved to it's now official website!
-		</p>
+			<h2 className="redirect-notice__header">It's official!</h2>
 
-		<a href="https://conu.app/" className="decoration-none">
-			<Btn>
-					Play at conu.app
-			</Btn>
-		</a>
+			<p className="redirect-notice__text">
+				Conu moved to it's now official website!
+			</p>
 
-	</div>
+			<a href="https://conu.app/" className="decoration-none">
+				<Btn>
+						Play at conu.app
+				</Btn>
+			</a>
+
+		</div>
+	</>
 
 export default RedirectNotice;
 
