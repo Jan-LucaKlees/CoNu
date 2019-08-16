@@ -141,7 +141,7 @@ export default class GameLoader extends React.PureComponent {
 					<header className="conu__header">
 
 						<BtnInvisible
-							className="conu__logo-wrapper"
+							className="btn--logo"
 							onClick={ () => this.onToggleMenu() } >
 							<img
 								src={ Logo }

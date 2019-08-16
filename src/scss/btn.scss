@@ -1,5 +1,8 @@
 $btn-single-line-height: 3.7rem;
 
+$btn-box-shadow:        .17rem .12rem .1rem 0 rgba( 0, 0, 0, 0.4 );
+$btn-box-shadow-active: .10rem .05rem .05rem 0 rgba( 0, 0, 0, 0.6 );
+
 .btn {
 	padding: 0.25rem 0.75rem;
 
@@ -7,6 +10,7 @@ $btn-single-line-height: 3.7rem;
 	border-style: solid;
 	border-color: #0e1111;
 	border-radius: 0.15rem;
+	box-shadow: $btn-box-shadow;
 
 	text-align: center;
 	font-size: 2.5rem;
@@ -20,12 +24,15 @@ $btn-single-line-height: 3.7rem;
 	transform: scale( 1 );
 
 	transition-properties: color, border-color, background-color, transform;
-	transition-timing-function: ease-out;
+	transition-timing-function: ease-in;
 	transition-duration: .3s;
 
 	&:active:not( :disabled ),
 	&--active:not( &--disabled ) {
 		transform: scale( 0.98 );
+		box-shadow: $btn-box-shadow-active;
+		transition-duration: .1s;
+		transition-timing-function: ease-out;
 	}
 
 	&:disabled,
@@ -33,6 +40,7 @@ $btn-single-line-height: 3.7rem;
 		border-color: #a8a9ab;
 		background-color: #ebedef;
 		color: #a8a9ab;
+		box-shadow: none;
 	}
 
 	&--single-line {

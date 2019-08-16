@@ -15,8 +15,6 @@ $row-height: $btn-single-line-height + $cell-v-spacing;
 
 		height: $row-height;
 
-		overflow: hidden;
-
 		transition-properties: height, opacity;
 		transition-timing-function: ease-in;
 		transition-duration: .3s;
