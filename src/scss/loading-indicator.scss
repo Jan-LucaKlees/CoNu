@@ -24,6 +24,11 @@
 			animation-play-state: paused;
 		}
 	}
+
+	&--content {
+		position: static;
+		flex: 1 1 auto;
+	}
 }
 
 .loading-indicator {

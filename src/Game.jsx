@@ -9,7 +9,7 @@ import GameState from './GameState';
 
 import Field from './Field';
 import Btn, { BtnSingleLine, BtnInvisible, BtnCuboid } from './Btn';
-import { LoadingScreen } from './LoadingIndicator';
+import LoadingIndicator, { LoadingScreen } from './LoadingIndicator';
 
 import Logo from '../assets/images/conu-logo.svg';
 
@@ -184,7 +184,7 @@ export default class GameLoader extends React.PureComponent {
 					</header>
 
 					{ this.state.newGameLoading ? (
-						"Loading new game..."
+						<LoadingScreen className="loading-screen--content" />
 					) : (
 						<Game
 							cells={ this.state.cells }

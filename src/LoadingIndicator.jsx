@@ -21,9 +21,9 @@ class LoadingIndicator extends React.PureComponent {
 
 class LoadingScreen extends React.PureComponent {
 	render() {
-		let { faded } = this.props;
+		let { faded, className } = this.props;
 		return (
-			<div className={ c( "loading-screen", { "loading-screen--faded": faded } ) } >
+			<div className={ c( "loading-screen", { "loading-screen--faded": faded }, className ) } >
 				<LoadingIndicator key="loading-indicator" />
 			</div>
 		)
