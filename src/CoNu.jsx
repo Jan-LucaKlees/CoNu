@@ -5,7 +5,6 @@ import WebFont from 'webfontloader';
 import './scss/main.scss';
 
 import UrlBasedContentSwitcher from './UrlBasedContentSwitcher';
-import Logo from '../assets/images/conu-logo.svg';
 
 
 WebFont.load({
@@ -18,10 +17,6 @@ class CoNu extends React.PureComponent {
 	render() {
 		return (
 			<main className="conu">
-
-				<header className="conu__header">
-					<img src={ Logo } className="conu__logo" />
-				</header>
 
 				<UrlBasedContentSwitcher />
 

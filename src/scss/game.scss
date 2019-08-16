@@ -26,14 +26,6 @@
 	}
 }
 
-.btn--new-game {
-	@extend .btn--single-line;
-
-	width: $cell-width * 5 + $cell-v-spacing * 4;
-
-	margin-bottom: 2rem;
-}
-
 .btn-roll-over {
 	position: relative;
 	perspective: 800px;

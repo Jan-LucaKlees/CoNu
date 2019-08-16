@@ -1,26 +1,59 @@
 import React from 'react';
 import { CSSTransition, TransitionGroup } from 'react-transition-group';
+import c from 'classnames';
 import Cookies from 'js-cookie';
 import uuidv4 from 'uuid/v1';
 
 import db from './db';
 import GameState from './GameState';
+
 import Field from './Field';
-import { BtnSingleLine } from './Btn';
+import Btn, { BtnSingleLine } from './Btn';
+
+import Logo from '../assets/images/conu-logo.svg';
 
 
 export default class GameLoader extends React.PureComponent {
 	constructor( props ) {
 		super( props );
 
+		this.collapseMenuTimeoutAfterAppLoaded = null;
+		this.collapseMenuTimeoutAfterNewGameLoaded = null;
+
 		this.state = {
-			loading: true,
+			appLoading: true,
+			newGameLoading: false,
 			error: null,
 			cells: [],
+			menuCollapsed: false,
 		}
 	}
 	componentDidMount() {
 		this.initializeGame();
+	}
+	componentDidUpdate( prevProps, prevState ) {
+		// Collapse the menu after a while when the app is loaded an rendered
+		// This is to hint the user where to find the 'New Game' button
+		if(
+			prevState.appLoading === true &&
+			this.state.appLoading ===false
+		) {
+			this.collapseMenuTimeoutAfterAppLoaded = setTimeout(
+				() => this.setState( { menuCollapsed: true } )
+				, 1000 );
+		}
+
+		// After the user started a new game and it is completely loaded and
+		// rendered, we hide the menu again to be in a more aestheticaly pleasing
+		// state.
+		if(
+			prevState.newGameLoading === true &&
+			this.state.newGameLoading ===false
+		) {
+			this.collapseMenuTimeoutAfterNewGameLoaded = setTimeout(
+				() => this.setState( { menuCollapsed: true } )
+				, 300 );
+		}
 	}
 	initializeGame() {
 		// Getting the game id
@@ -58,16 +91,28 @@ export default class GameLoader extends React.PureComponent {
 			// Register the snapshot listener listening for new game states
 			this.gameRef.onSnapshot( ( gameSnapshot ) => {
 				this.setState( {
-					loading: false,
+					appLoading: false,
+					newGameLoading: false,
 					cells: gameSnapshot.data().cells
 				} )
 			} );
 		}).catch( ( error ) => {
 			this.setState({
-				loading: false,
+				appLoading: false,
+				newGameLoading: false,
 				error: error
 			})
 		});
+	}
+	onToggleMenu() {
+		// Clear timeouts in case the user interacts with the menu to prevent the
+		// menu from collapsing when the user intentionally opened it.
+		clearTimeout( this.collapseMenuTimeoutAfterAppLoaded );
+		clearTimeout( this.collapseMenuTimeoutAfterNewGameLoaded );
+
+		this.setState({
+			menuCollapsed: !this.state.menuCollapsed
+		})
 	}
 	onChange( newCells ) {
 		this.gameRef.update({
@@ -78,7 +123,7 @@ export default class GameLoader extends React.PureComponent {
 		Cookies.remove( 'gameId' );
 
 		this.setState({
-			loading: true,
+			newGameLoading: true,
 			error: null,
 			cells: [],
 		});
@@ -86,16 +131,44 @@ export default class GameLoader extends React.PureComponent {
 		this.initializeGame();
 	}
 	render() {
-		if( this.state.loading ) {
+		if( this.state.appLoading ) {
 			return "loading..."
 		} else if( this.state.error ) {
 			return "error: " + this.state.error
 		} else {
 			return (
-				<Game
-					cells={ this.state.cells }
-					onChange={ ( newCells ) => this.onChange( newCells ) }
-					onStartNewGame={ () => this.onStartNewGame() } />
+				<>
+					<header className="conu__header">
+
+						<img
+							src={ Logo }
+							className="conu__logo"
+							onClick={ () => this.onToggleMenu() } />
+
+						<nav
+							className={ c( "conu__menu-wrapper", {
+								"conu__menu-wrapper--collapsed": this.state.menuCollapsed
+							} ) }>
+							<div className="menu">
+								<Btn
+									className="btn--menu-item"
+									onClick={ () => { this.onStartNewGame() } } >
+									New Game
+								</Btn>
+							</div>
+						</nav>
+
+					</header>
+
+					{ this.state.newGameLoading ? (
+						"Loading new game..."
+					) : (
+						<Game
+							cells={ this.state.cells }
+							onChange={ ( newCells ) => this.onChange( newCells ) }
+							onStartNewGame={ () => this.onStartNewGame() } />
+					) }
+				</>
 			);
 		}
 	}
@@ -161,12 +234,6 @@ class Game extends React.PureComponent {
 	render() {
 		return (
 			<div className="game">
-
-				<BtnSingleLine
-					className="btn--new-game"
-					onClick={ () => this.props.onStartNewGame() }>
-					New Game
-				</BtnSingleLine>
 
 				<div className="game__content">
 					{ this.state.finished && !this.state.waitingForFieldToCollapse ? (
