@@ -12,11 +12,16 @@ $conu-padding: 0.4rem;
 		width: $mobile-landscape-width;
 	}
 
-	&__title {
-		@extend .title-font;
+	&__header {
+		display: flex;
+		justify-content: center;
 
-		font-size: 8rem;
-		font-weight: 900;
+		padding: 2rem;
+	}
+
+	&__logo {
+		width: 7.9rem;
+		height: 7.9rem;
 	}
 }
 

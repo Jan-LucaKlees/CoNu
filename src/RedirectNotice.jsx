@@ -1,26 +1,24 @@
 import React from 'react';
 
-import StyledName from './StyledName';
-import StyledLink from './StyledLink';
 import Btn from './Btn';
 
 
-const OfficialURLNotice = () =>
+const RedirectNotice = () =>
 	<div className="redirect-notice">
 
 		<h2 className="redirect-notice__header">It's official!</h2>
 
 		<p className="redirect-notice__text">
-			<StyledName /> moved to it's now official website <StyledLink />!
+			Conu moved to it's now official website!
 		</p>
 
 		<a href="https://conu.app/" className="decoration-none">
 			<Btn>
-					Play at <StyledName />.app
+					Play at conu.app
 			</Btn>
 		</a>
 
 	</div>
 
-export default OfficialURLNotice
+export default RedirectNotice;
 
