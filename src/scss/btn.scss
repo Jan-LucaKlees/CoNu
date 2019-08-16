@@ -23,8 +23,8 @@ $btn-single-line-height: 3.7rem;
 	transition-timing-function: ease-out;
 	transition-duration: .3s;
 
-	&:active,
-	&--active {
+	&:active:not( :disabled ),
+	&--active:not( &--disabled ) {
 		transform: scale( 0.98 );
 	}
 
