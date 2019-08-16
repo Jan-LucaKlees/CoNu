@@ -9,6 +9,7 @@ import GameState from './GameState';
 
 import Field from './Field';
 import Btn, { BtnSingleLine, BtnInvisible, BtnCuboid } from './Btn';
+import { LoadingScreen } from './LoadingIndicator';
 
 import Logo from '../assets/images/conu-logo.svg';
 
@@ -26,6 +27,7 @@ export default class GameLoader extends React.PureComponent {
 			error: null,
 			cells: [],
 			menuCollapsed: false,
+			waitingForLoadingScreenToFade: true
 		}
 	}
 	componentDidMount() {
@@ -36,11 +38,20 @@ export default class GameLoader extends React.PureComponent {
 		// This is to hint the user where to find the 'New Game' button
 		if(
 			prevState.appLoading === true &&
-			this.state.appLoading ===false
+			this.state.appLoading === false
 		) {
 			this.collapseMenuTimeoutAfterAppLoaded = setTimeout(
-				() => this.setState( { menuCollapsed: true } )
-				, 1000 );
+				() => this.setState( {
+					menuCollapsed: true
+				} ),
+				1300
+			);
+			setTimeout(
+				() => this.setState( {
+					waitingForLoadingScreenToFade: false
+				} ),
+				300
+			);
 		}
 
 		// After the user started a new game and it is completely loaded and
@@ -48,7 +59,7 @@ export default class GameLoader extends React.PureComponent {
 		// state.
 		if(
 			prevState.newGameLoading === true &&
-			this.state.newGameLoading ===false
+			this.state.newGameLoading === false
 		) {
 			this.collapseMenuTimeoutAfterNewGameLoaded = setTimeout(
 				() => this.setState( { menuCollapsed: true } )
@@ -132,12 +143,21 @@ export default class GameLoader extends React.PureComponent {
 	}
 	render() {
 		if( this.state.appLoading ) {
-			return "loading..."
+			return <LoadingScreen key="loading-screen" />
 		} else if( this.state.error ) {
 			return "error: " + this.state.error
 		} else {
 			return (
 				<>
+					{ this.state.waitingForLoadingScreenToFade &&
+						<LoadingScreen
+							key="loading-screen"
+							faded={
+								!this.state.appLoading &&
+									this.state.waitingForLoadingScreenToFade
+							} />
+					}
+
 					<header className="conu__header">
 
 						<BtnInvisible

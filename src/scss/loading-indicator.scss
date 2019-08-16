@@ -1,0 +1,83 @@
+.loading-screen {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+
+	position: fixed;
+	top: 0;
+	right: 0;
+	bottom: 0;
+	left: 0;
+
+	background-color: #ebedef;
+
+	z-index: 10;
+
+	transition-property: opacity;
+	transition-duration: .3s;
+	transition-timing-function: ease-out;
+
+	&--faded {
+		opacity: 0;
+
+		.loading-indicator__cube {
+			animation-play-state: paused;
+		}
+	}
+}
+
+.loading-indicator {
+	width: 4rem;
+	height: 4rem;
+
+	perspective: 800px;
+
+	$transform-height: 4rem / 2;
+
+	&__cube {
+		position: relative;
+
+		width: inherit;
+		height: inherit;
+
+		transform-style: preserve-3d;
+
+		animation: loading 10s linear infinite;
+
+		@mixin random-rotation {
+			transform: translateZ( -$transform-height ) rotateX( random(360) + deg ) rotateY( random(360) + deg ) rotateZ( random(360) + deg );
+		}
+
+		@keyframes loading {
+			  0%, 100% { transform: translateZ( -$transform-height ) rotateX( 0 ) rotateY( 0 ) rotateZ ( 0 ) }
+			 10% { @include random-rotation }
+			 20% { @include random-rotation }
+			 30% { @include random-rotation }
+			 40% { @include random-rotation }
+			 50% { @include random-rotation }
+			 60% { @include random-rotation }
+			 70% { @include random-rotation }
+			 80% { @include random-rotation }
+			 90% { @include random-rotation }
+		}
+	}
+
+	&__face {
+		position: absolute;
+
+		width: inherit;
+		height: inherit;
+
+		background-image: url( "../../assets/images/conu-logo-inverted-square.svg" );
+		background-size: 100% 100%;
+		background-color: black;
+
+		&--front  { transform: rotateY(  0deg) translateZ( $transform-height ); }
+		&--right  { transform: rotateY( 90deg) translateZ( $transform-height ); }
+		&--back   { transform: rotateY(180deg) translateZ( $transform-height ); }
+		&--left   { transform: rotateY(-90deg) translateZ( $transform-height ); }
+		&--top    { transform: rotateX( 90deg) translateZ( $transform-height ); }
+		&--bottom { transform: rotateX(-90deg) translateZ( $transform-height ); }
+	}
+}
+
