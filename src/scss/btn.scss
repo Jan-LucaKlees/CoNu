@@ -43,6 +43,14 @@ $btn-box-shadow-active: .10rem .05rem .05rem 0 rgba( 0, 0, 0, 0.6 );
 		box-shadow: none;
 	}
 
+	&:focus {
+		outline: none;
+	}
+
+	&::-moz-focus-inner {
+		border: 0;
+	}
+
 	&--single-line {
 		height: $btn-single-line-height;
 		overflow: hidden;
