@@ -84,7 +84,8 @@ class GameState {
 		return {
 			index: index,
 			cells: cells,
-			hasPairableCells: () => cells.some( ( cell ) => !cell.paired )
+			hasPairableCells: () => cells.some( ( cell ) => !cell.paired ),
+			isLast: () => index == this.getRowCount() -1
 		};
 	}
 
