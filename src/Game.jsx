@@ -8,7 +8,7 @@ import db from './db';
 import GameState from './GameState';
 
 import Field from './Field';
-import Btn, { BtnSingleLine, BtnInvisible } from './Btn';
+import Btn, { BtnSingleLine, BtnInvisible, BtnCuboid } from './Btn';
 
 import Logo from '../assets/images/conu-logo.svg';
 
@@ -182,14 +182,12 @@ class Game extends React.PureComponent {
 	constructor( props ) {
 		super( props );
 
-		this.rollOverAnimationDuration = 400;
-
 		this.gameState = new GameState( props.cells );
 
 		this.state = {
 			finished: this.gameState.isFinished(),
 			waitingForFieldToCollapse: false,
-			watiginForWonMessageToShow: false,
+			waitingForWonMessageToShow: false,
 			selectedCell: null
 		}
 	}
@@ -201,7 +199,7 @@ class Game extends React.PureComponent {
 			this.setState({
 				finished: true,
 				waitingForFieldToCollapse: true,
-				watiginForWonMessageToShow: true,
+				waitingForWonMessageToShow: true,
 			});
 
 			setTimeout( () => {
@@ -212,7 +210,7 @@ class Game extends React.PureComponent {
 
 			setTimeout( () => {
 				this.setState({
-					watiginForWonMessageToShow: false,
+					waitingForWonMessageToShow: false,
 				});
 			}, 1000);
 		}
@@ -249,36 +247,23 @@ class Game extends React.PureComponent {
 					) }
 				</div>
 
-				<TransitionGroup className="btn-roll-over">
-					{ this.state.finished && !this.state.watiginForWonMessageToShow ? (
-						<CSSTransition
-							key="new-game"
-							timeout={ this.rollOverAnimationDuration }
-							classNames="roller" >
-							<div className="roller">
-								<BtnSingleLine
-									className="btn-roll-over-face"
-									onClick={ () => this.props.onStartNewGame() }>
-									New Game
-								</BtnSingleLine>
-							</div>
-						</CSSTransition>
-					) : (
-						<CSSTransition
-							key="extend"
-							timeout={ this.rollOverAnimationDuration }
-							classNames="roller" >
-							<div className="roller">
-								<BtnSingleLine
-									className="btn-roll-over-face"
-									disabled={ this.state.finished }
-									onClick={ () => this.onExtendField() }>
-									Extend
-								</BtnSingleLine>
-							</div>
-						</CSSTransition>
-					) }
-				</TransitionGroup>
+				<BtnCuboid
+					className="btn-cuboid--cell-matching-width"
+					showFace={ this.state.finished &&
+							!this.state.waitingForWonMessageToShow ? "top" : "front" }
+					Front={(
+						<BtnSingleLine
+							disabled={ this.state.finished }
+							onClick={ () => this.onExtendField() }>
+							Extend
+						</BtnSingleLine>
+					)}
+					Top={(
+						<BtnSingleLine
+							onClick={ () => this.props.onStartNewGame() }>
+							New Game
+						</BtnSingleLine>
+					)} />
 
 			</div>
 		);

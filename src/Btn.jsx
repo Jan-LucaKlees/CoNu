@@ -57,5 +57,16 @@ const BtnInvisible = ( { onClick, disabled, className, children } ) => (
 	</Btn>
 );
 
-export { Btn as default, BtnSingleLine, BtnInvisible };
+const BtnCuboid = ( { Front, Top, Bottom, Back, showFace, className } ) => (
+	<div className={ c( 'btn-cuboid', className ) } >
+		<div className={ "btn-cuboid__cuboid btn-cuboid__cuboid--show-" + showFace } >
+			<div className="btn-cuboid__face   btn-cuboid__face--front" >{ Front  }</div>
+			<div className="btn-cuboid__face   btn-cuboid__face--top"   >{ Top    }</div>
+			<div className="btn-cuboid__face   btn-cuboid__face--bottom">{ Bottom }</div>
+			<div className="btn-cuboid__face   btn-cuboid__face--back"  >{ Back   }</div>
+		</div>
+	</div>
+);
+
+export { Btn as default, BtnSingleLine, BtnInvisible, BtnCuboid };
 
