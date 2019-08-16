@@ -17,13 +17,15 @@ $btn-single-line-height: 3.7rem;
 
 	cursor: pointer;
 
-	transition-properties: color, border-color, background-color;
+	transform: scale( 1 );
+
+	transition-properties: color, border-color, background-color, transform;
 	transition-timing-function: ease-out;
 	transition-duration: .3s;
 
 	&:active,
 	&--active {
-		background-color: #babcf0;
+		transform: scale( 0.98 );
 	}
 
 	&:disabled,
@@ -36,6 +38,12 @@ $btn-single-line-height: 3.7rem;
 	&--single-line {
 		height: $btn-single-line-height;
 		overflow: hidden;
+	}
+
+	&--invisible {
+		padding: 0;
+		border: none;
+		background: none;
 	}
 }
 

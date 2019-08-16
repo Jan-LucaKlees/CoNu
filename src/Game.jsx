@@ -8,7 +8,7 @@ import db from './db';
 import GameState from './GameState';
 
 import Field from './Field';
-import Btn, { BtnSingleLine } from './Btn';
+import Btn, { BtnSingleLine, BtnInvisible } from './Btn';
 
 import Logo from '../assets/images/conu-logo.svg';
 
@@ -140,10 +140,13 @@ export default class GameLoader extends React.PureComponent {
 				<>
 					<header className="conu__header">
 
-						<img
-							src={ Logo }
-							className="conu__logo"
-							onClick={ () => this.onToggleMenu() } />
+						<BtnInvisible
+							className="conu__logo-wrapper"
+							onClick={ () => this.onToggleMenu() } >
+							<img
+								src={ Logo }
+								className="conu__logo" />
+						</BtnInvisible>
 
 						<nav
 							className={ c( "conu__menu-wrapper", {

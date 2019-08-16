@@ -44,3 +44,7 @@ $row-height: $btn-single-line-height + $cell-v-spacing;
 	padding: 0.25rem 0;
 }
 
+.btn--selected {
+	background-color: #babcf0;
+}
+

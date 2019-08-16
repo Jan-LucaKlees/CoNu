@@ -19,11 +19,14 @@ $conu-padding: 0.4rem;
 		padding: 2rem;
 	}
 
+	&__logo-wrapper {
+	}
+
 	&__logo {
+		display: block;
+
 		width: 7.9rem;
 		height: 7.9rem;
-
-		cursor: pointer;
 
 		&--not-interactive {
 			cursor: initial;

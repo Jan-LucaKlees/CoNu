@@ -19,5 +19,14 @@ const BtnSingleLine = ( { onClick, disabled, className, children } ) => (
 	</Btn>
 );
 
-export { Btn as default, BtnSingleLine };
+const BtnInvisible = ( { onClick, disabled, className, children } ) => (
+	<Btn
+		className={ c( 'btn--invisible', className ) }
+		disabled={ disabled }
+		onClick={ onClick }>
+		{ children }
+	</Btn>
+);
+
+export { Btn as default, BtnSingleLine, BtnInvisible };
 
