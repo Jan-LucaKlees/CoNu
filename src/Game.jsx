@@ -1,4 +1,6 @@
 import React from 'react';
+import * as firebase from "firebase/app";
+import "firebase/auth";
 import { CSSTransition, TransitionGroup } from 'react-transition-group';
 import c from 'classnames';
 import Cookies from 'js-cookie';
@@ -31,7 +33,24 @@ export default class GameLoader extends React.PureComponent {
 		}
 	}
 	componentDidMount() {
-		this.initializeGame();
+		// First Authenticate the user
+		firebase.auth().signInAnonymously()
+			.catch( ( error ) => {
+				this.setState( {
+					appLoading: false,
+					newGameLoading: false,
+					error: error
+				} )
+			});
+
+		firebase.auth()
+			.onAuthStateChanged( ( user ) => {
+				if ( user ) {
+					this.user = user;
+					this.initializeGame();
+				}
+			});
+
 	}
 	componentDidUpdate( prevProps, prevState ) {
 		// Collapse the menu after a while when the app is loaded an rendered
@@ -86,6 +105,8 @@ export default class GameLoader extends React.PureComponent {
 				if (!game.exists) {
 					transaction.set( this.gameRef, {
 						cells: GameState.DEFAULT_START_VALUES,
+						owner: this.user.uid,
+						created_at: firebase.firestore.Timestamp.now()
 					} );
 				}
 
