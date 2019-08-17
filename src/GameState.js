@@ -2,7 +2,7 @@ const DEFAULT_START_VALUES = [1,2,3,4,5,6,7,8,9,1,1,1,2,1,3,1,4,1,5,1,6,1,7,1,8,
 const DEFAULT_WIDTH = 9;
 
 
-export default class GameState {
+class GameState {
 	constructor( cells = DEFAULT_START_VALUES, width = DEFAULT_WIDTH) {
 		console.assert( Array.isArray( cells ) );
 		console.assert( cells.every( ( val ) => this.isValidValue( val ) ) );
@@ -84,7 +84,8 @@ export default class GameState {
 		return {
 			index: index,
 			cells: cells,
-			hasPairableCells: () => cells.some( ( cell ) => !cell.paired )
+			hasPairableCells: () => cells.some( ( cell ) => !cell.paired ),
+			isLast: () => index == this.getRowCount() -1
 		};
 	}
 
@@ -178,4 +179,8 @@ export default class GameState {
 		return this.cells.every( ( val, index ) => this.isCellPaired( index ) );
 	}
 }
+
+GameState.DEFAULT_START_VALUES = DEFAULT_START_VALUES;
+
+export default GameState;
 

@@ -4,24 +4,19 @@ import WebFont from 'webfontloader';
 
 import './scss/main.scss';
 
-import Game from './Game';
 import UrlBasedContentSwitcher from './UrlBasedContentSwitcher';
 
 
 WebFont.load({
-  google: {
-    families: ['Share Tech Mono', 'Sarpanch:900' ],
-  }
+	google: {
+		families: [ 'Share Tech Mono' ],
+	}
 });
 
 class CoNu extends React.PureComponent {
 	render() {
 		return (
-			<main className="main">
-
-				<header>
-					<h1 className="title">CoNu</h1>
-				</header>
+			<main className="conu">
 
 				<UrlBasedContentSwitcher />
 
@@ -36,6 +31,6 @@ ReactDOM.render(
 );
 
 if( DEV_SERVER ) {
-  module.hot.accept();
+	module.hot.accept();
 }
 

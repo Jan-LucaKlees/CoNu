@@ -1,36 +1,50 @@
-@mixin btn {
-	padding: 0.25rem 0.75rem;
+@import './variables';
 
-	border-width: 0.2rem;
-	border-style: solid;
-	border-color: #0e1111;
-	border-radius: 0.15rem;
-
-	text-align: center;
-	font-size: 2.5rem;
-	font-family: inherit;
-	color: #0e1111;
-
-	background-color: #fdfeff;
-
-	cursor: pointer;
-
-	&:active,
-	&.active {
-		background-color: #babcf0;
-	}
-
-	&:disabled,
-	&.disabled {
-		border-color: #a8a9ab;
-		background-color: #ebedef;
-		color: #a8a9ab;
-	}
+@mixin mq-mobile-portrait-up {
+  @media (min-width: $mobile-portrait-width) {
+    @content
+  }
 }
 
-@mixin btn-single-line {
-	@include btn;
-
-	height: 3.7rem;
-	overflow: hidden;
+@mixin mq-mobile-landscape-up {
+  @media (min-width: $mobile-landscape-width) {
+    @content
+  }
 }
+
+@mixin until-tablet-portrait {
+  @media (max-width: $tablet-portrait-width - 0.01px) {
+    @content
+  }
+}
+
+@mixin mq-tablet-portrait-up {
+  @media (min-width: $tablet-portrait-width) {
+    @content
+  }
+}
+
+@mixin mq-tablet-landscape-up {
+  @media (min-width: $tablet-landscape-width) {
+    @content
+  }
+}
+
+@mixin mq-small-up {
+  @media (min-width: $small-width) {
+    @content
+  }
+}
+
+@mixin mq-medium-up {
+  @media (min-width: $medium-width) {
+    @content
+  }
+}
+
+@mixin mq-full-up {
+  @media (min-width: $full-width) {
+    @content
+  }
+}
+

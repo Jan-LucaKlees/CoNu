@@ -1,25 +1,34 @@
 import React from 'react';
 
-import StyledName from './StyledName';
-import StyledLink from './StyledLink';
+import Btn from './Btn';
+
+import Logo from '../assets/images/conu-logo.svg';
 
 
-const OfficialURLNotice = () =>
-	<div className="content redirect-notice">
+const RedirectNotice = () =>
+	<>
+		<header className="conu__header">
+			<img
+				src={ Logo }
+				className="conu__logo conu__logo--not-interactive" />
+		</header>
 
-		<h2 className="header">It's official!</h2>
+		<div className="redirect-notice">
 
-		<p className="notice">
-			<StyledName /> moved to it's now official website <StyledLink />!
-		</p>
+			<h2 className="redirect-notice__header">It's official!</h2>
 
-		<a href="https://conu.app/" className="decoration-none">
-			<button className="redirect-btn">
-					Play at <StyledName />.app
-			</button>
-		</a>
+			<p className="redirect-notice__text">
+				Conu moved to it's now official website!
+			</p>
 
-	</div>
+			<a href="https://conu.app/" className="decoration-none">
+				<Btn>
+						Play at conu.app
+				</Btn>
+			</a>
 
-export default OfficialURLNotice
+		</div>
+	</>
+
+export default RedirectNotice;
 

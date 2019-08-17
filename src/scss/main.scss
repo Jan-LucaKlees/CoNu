@@ -3,7 +3,39 @@
 @import './variables';
 @import './mixins';
 
-@import './global';
+@import './btn';
+@import './conu';
 @import './field';
+@import './game';
 @import './redirect-notice';
+@import './loading-indicator';
+
+html {
+	font-size: 4vw;
+
+	@include mq-mobile-landscape-up() {
+		font-size: $mobile-landscape-width * 0.04;
+	}
+}
+
+body {
+	background-color: #ebedef;
+	color: #0e1111;
+	font-family: "Share Tech Mono", monospace;
+	overflow-x: hidden;
+}
+
+h2 {
+	font-size: 2rem;
+	font-weight: 900;
+}
+
+a:not(.decoration-none) {
+	text-decoration: underline;
+	color: #60617d;
+}
+
+.decoration-none {
+	text-decoration: none;
+}
 

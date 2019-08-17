@@ -3,7 +3,7 @@ import React from 'react';
 import Cell from './Cell'
 
 const Row = ({ cells, selectedCell, onSelectCell }) =>
-	<div className="row">
+	<div className="field__row">
 		{
 			cells.map( ( cell ) =>
 				<Cell

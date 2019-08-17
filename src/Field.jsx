@@ -7,12 +7,12 @@ const Field = ({ state, selectedCell, onSelectCell }) =>
 <TransitionGroup className="field">
 	{
 		state.rows
-			.filter( ( row ) => row.hasPairableCells() )
+			.filter( ( row ) => row.hasPairableCells() || row.isLast() )
 			.map( ( row ) =>
 				<CSSTransition
 					key={ row.index }
 					timeout={ 300 }
-					classNames="row"
+					classNames="field__row"
 				>
 					<Row
 						key={ row.index }

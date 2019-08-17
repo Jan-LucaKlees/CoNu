@@ -1,0 +1,35 @@
+.game {
+	.game__content {
+		display: flex;
+		flex-direction: column;
+		justify-content: center;
+
+		margin-bottom: 2rem;
+
+		min-height: $row-height * 2;
+	}
+	.game__won-message {
+		font-size: 3.5rem;
+
+		animation: .2s won-message cubic-bezier(0.075, 0.82, 0.165, 1) 1 forwards;
+
+		@keyframes won-message {
+			0% {
+				opacity: 0;
+				transform: scale(0);
+			}
+			100% {
+				opacity: 1;
+				transform: scale(1);
+			}
+		}
+	}
+}
+
+.btn-cuboid--cell-matching-width {
+	display: inline-block;
+
+	width: $cell-width * 5 + $cell-v-spacing * 4;
+	margin-bottom: 2rem;
+}
+

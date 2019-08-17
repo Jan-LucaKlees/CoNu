@@ -1,47 +1,48 @@
-@import './mixins';
+// I calculated this value by hand; TODO add calc() expression
+$cell-width: 2.511rem;
+$cell-h-spacing: 0.2rem;
+$cell-v-spacing: 0.2rem;
+$row-height: $btn-single-line-height + $cell-v-spacing;
 
 .field {
 	display: flex;
 	flex-direction: column;
 
-	padding: 0.4rem;
-	margin-bottom: 1rem;
-}
+	&__row {
+		display: grid;
+		grid-template-columns: repeat( 9, 1fr );
+		grid-column-gap: $cell-h-spacing;
 
-.row {
-	display: grid;
-	grid-template-columns: repeat( 9, 1fr );
-	grid-column-gap: 0.2rem;
+		height: $row-height;
 
-	overflow: hidden;
+		transition-properties: height, opacity;
+		transition-timing-function: ease-in;
+		transition-duration: .3s;
 
-	transition-properties: height, opacity;
-	transition-timing-function: ease-in;
-	transition-duration: .3s;
+		&-exit {
+			height: $row-height;
+			opacity: 1;
+		}
 
-	&-exit {
-		height: 3.9rem;
-		opacity: 1;
+		&-exit-active {
+			height: 0;
+			opacity: 0;
+		}
 	}
 
-	&-exit-active {
-		height: 0;
-		opacity: 0;
+	&__cell-wrapper {
+		padding: $cell-v-spacing / 2 0;
 	}
 }
 
-.cell-wrapper {
-	padding: 0.1rem 0;
-}
-
-.cell {
-	@include btn-single-line;
+.btn--cell {
+	@extend .btn--single-line;
 
 	width: 100%;
 	padding: 0.25rem 0;
+}
 
-	transition-properties: color, border-color, background-color;
-	transition-timing-function: ease-out;
-	transition-duration: .3s;
+.btn--selected {
+	background-color: #babcf0;
 }
 
