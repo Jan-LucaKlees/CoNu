@@ -84,7 +84,7 @@ module.exports = (env = {}, argv) => {
 			plugins: [
 				new webpack.HotModuleReplacementPlugin(),
 				new webpack.DefinePlugin({
-					HOSTNAME: JSON.stringify("localhost:8080"),
+					HOSTNAME: JSON.stringify( env.BUILD_FOR_GITHUB_PAGES ? "localhost:8081" : "localhost:8080" ),
 					DEV_SERVER: argv['$0'].includes('webpack-dev-server')
 				})
 			],
