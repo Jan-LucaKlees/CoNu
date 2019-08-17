@@ -14,7 +14,11 @@ const base = {
 				use: ['babel-loader']
 			},
 			{
-				test: /\.(png|svg|jpg|gif)$/,
+				test: /\.(png|svg|jpg|gif|ico)$/,
+				use: [ 'file-loader' ]
+			},
+			{
+				test: /(browserconfig\.xml|site\.webmanifest)$/,
 				use: [ 'file-loader' ]
 			},
 		]
