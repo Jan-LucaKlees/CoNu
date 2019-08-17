@@ -4,7 +4,8 @@ const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 
 
-const base = {
+// Base config, mostly rules
+const baseConfig = {
 	entry: './src/CoNu.jsx',
 	module: {
 		rules: [
@@ -14,32 +15,64 @@ const base = {
 				use: ['babel-loader']
 			},
 			{
-				test: /\.(png|svg|jpg|gif)$/,
+				test: /\.(png|svg|jpg|gif|ico)$/,
+				use: [ 'file-loader' ]
+			},
+			{
+				test: /(browserconfig\.xml|site\.webmanifest)$/,
 				use: [ 'file-loader' ]
 			},
 		]
 	},
 	plugins: [
-		new HtmlWebpackPlugin({
-			'title': 'CoNu - Connect the Numbers!',
-			'template': 'src/index.html',
-			'xhtml': true,
-			'base': '/',
-		})
   ],
 	resolve: {
 		extensions: ['*', '.js', '.jsx', '.scss']
 	},
 	output: {
-		path: __dirname + '/public',
-		publicPath: '/',
 		filename: 'bundle.js'
 	}
 };
 
-module.exports = (env, argv) => {
+// Basic HtmlWebpackPlugin Configuration
+const HtmlWebpackPluginBase = {
+	'title': 'CoNu - Connect the Numbers!',
+	'template': 'src/index.html',
+	'xhtml': true
+};
+
+// Configuration for conu.app
+const officialWebsiteConfig ={
+	plugins: [
+		new HtmlWebpackPlugin( merge( HtmlWebpackPluginBase, {
+			'base': '/',
+		}) ),
+  ],
+	output: {
+		path: __dirname + '/public',
+		publicPath: '/',
+	}
+};
+
+// Configuration for GitHub pages
+const githubPagesConfig = {
+	plugins: [
+		new HtmlWebpackPlugin( merge( HtmlWebpackPluginBase, {
+			'base': '/conu/',
+		}) ),
+  ],
+	output: {
+		path: __dirname + '/docs',
+		publicPath: '/conu/',
+	}
+}
+
+module.exports = (env = {}, argv) => {
+	const flavoredBase = env.BUILD_FOR_GITHUB_PAGES ?
+		merge( baseConfig, githubPagesConfig ) : merge( baseConfig, officialWebsiteConfig );
+
 	if (argv.mode === 'development') {
-		return merge( base, {
+		return merge( flavoredBase, {
 			module: {
 				rules: [
 					{
@@ -51,17 +84,17 @@ module.exports = (env, argv) => {
 			plugins: [
 				new webpack.HotModuleReplacementPlugin(),
 				new webpack.DefinePlugin({
-					HOSTNAME: JSON.stringify("localhost:8080"),
+					HOSTNAME: JSON.stringify( env.BUILD_FOR_GITHUB_PAGES ? "localhost:8081" : "localhost:8080" ),
 					DEV_SERVER: argv['$0'].includes('webpack-dev-server')
 				})
 			],
 			devServer: {
-				contentBase: './public',
+				contentBase: env.BUILD_FOR_GITHUB_PAGES ? './docs' : './public',
 				hot: true
 			}
 		});
 	} else if (argv.mode === 'production') {
-		return merge( base, {
+		return merge( flavoredBase, {
 			module: {
 				rules: [
 					{
@@ -75,7 +108,7 @@ module.exports = (env, argv) => {
 					filename: 'bundle.[contenthash].css'
 				}),
 				new webpack.DefinePlugin({
-					HOSTNAME: JSON.stringify( env && env.PREVIEW ? "localhost:5000" : "conu.app" ),
+					HOSTNAME: JSON.stringify( env.PREVIEW ? "localhost:5000" : "conu.app" ),
 					DEV_SERVER: argv['$0'].includes('webpack-dev-server')
 				})
 			],
@@ -84,6 +117,6 @@ module.exports = (env, argv) => {
 			}
 		});
 	} else {
-		return base;
+		return flavoredBase;
 	}
 };
