@@ -5,11 +5,22 @@
   "main": "index.html",
   "scripts": {
     "test": "jest",
-    "build": "rm -rf public && webpack --config ./webpack.config.js --mode production",
-    "preview": "npm run build -- --env.PREVIEW=true && firebase serve --only hosting",
-    "deploy": "npm run test && npm run build && firebase deploy",
-    "dev-test": "jest --watch",
-    "dev-server": "webpack-dev-server --config ./webpack.config.js --mode development --devtool source-map"
+    "test:watch": "npm run test -- --watch",
+
+    "dev": "npm run dev:official-website & npm run dev:github-pages",
+    "_dev-script": "webpack-dev-server --config ./webpack.config.js --mode development --devtool source-map",
+    "dev:official-website": "npm run _dev-script --",
+    "dev:github-pages":     "npm run _dev-script -- --env.BUILD_FOR_GITHUB_PAGES=true --port 8081",
+
+    "preview": "npm run preview:official-website",
+    "preview:official-website": "npm run build:official-website -- --env.PREVIEW=true && firebase serve --only hosting",
+
+    "build": "npm run build:official-website && npm run build:github-pages",
+    "_build-script": "webpack --config ./webpack.config.js --mode production",
+    "build:official-website": "rm -rf public && npm run _build-script --",
+    "build:github-pages":     "rm -rf docs   && npm run _build-script -- --env.BUILD_FOR_GITHUB_PAGES=true",
+
+    "deploy": "npm run test && npm run build && firebase deploy"
   },
   "author": "Jan-Luca Klees",
   "license": "GNU GPLv3",
