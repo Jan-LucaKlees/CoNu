@@ -17,6 +17,7 @@ import Logo from '../assets/images/conu-logo.svg';
 
 
 export default class GameLoader extends React.PureComponent {
+
 	constructor( props ) {
 		super( props );
 
@@ -32,26 +33,41 @@ export default class GameLoader extends React.PureComponent {
 			waitingForLoadingScreenToFade: true
 		}
 	}
+
 	componentDidMount() {
-		// First Authenticate the user
-		firebase.auth().signInAnonymously()
+
+		// Authenticate user anonymously to get an uid for referencing the game
+		this.authenticate()
+			.then( ( user ) => {
+
+				console.debug( user.uid );
+
+				this.user = user;
+
+				// With our uid, we can now look up the users latest game, or create a
+				// new one in case the user hasn't played yet.
+				this.getCurrentOrNewGameRef( this.user )
+					.then( ( gameRef ) => {
+
+						// Set the game ref to be used in other functions.
+						this.gameRef = gameRef;
+
+						// finally, we register a listener for listening to changes in the
+						// database on the game we created or found for the user. We hook
+						// the listener to our components state.
+						this.registerGameStateListener()
+
+					})
+					.catch( ( error ) => {
+						this.setErrorState( error );
+					});
+
+			})
 			.catch( ( error ) => {
-				this.setState( {
-					appLoading: false,
-					newGameLoading: false,
-					error: error
-				} )
-			});
-
-		firebase.auth()
-			.onAuthStateChanged( ( user ) => {
-				if ( user ) {
-					this.user = user;
-					this.initializeGame();
-				}
-			});
-
+				this.setErrorState( error );
+			})
 	}
+
 	componentDidUpdate( prevProps, prevState ) {
 		// Collapse the menu after a while when the app is loaded an rendered
 		// This is to hint the user where to find the 'New Game' button
@@ -85,57 +101,95 @@ export default class GameLoader extends React.PureComponent {
 				, 300 );
 		}
 	}
-	initializeGame() {
-		// Getting the game id
-		// For existing games this should be found in the `gameId` cookie. If no
-		// cookie is found, we just create a new id and thus implicitly create a new
-		// game in the database.
-		this.gameId = Cookies.get( 'gameId' ) || uuidv4();
 
-		this.gameRef = db.collection( 'games' ).doc( this.gameId );
+	componentWillUnmount() {
+		this.unsubscribeGameStateListener();
 
-		// Initialize a new game using a transaction
-		// using a transaction makes creating a new game easier, preventing a small
-		// callback hell.
-		// We only need this for new games, not yet existing in the database. For
-		// existing games, there is nothing happening here.
-		db.runTransaction( ( transaction ) => {
-			return transaction.get( this.gameRef ).then( ( game ) => {
-				// Create the game with the default values if it does not exist
-				if (!game.exists) {
-					transaction.set( this.gameRef, {
-						cells: GameState.DEFAULT_START_VALUES,
-						owner: this.user.uid,
-						created_at: firebase.firestore.Timestamp.now()
-					} );
-				}
+		clearTimeout( this.collapseMenuTimeoutAfterAppLoaded );
+		clearTimeout( this.collapseMenuTimeoutAfterNewGameLoaded );
+	}
 
-				// Workaround for already existing games, with no writes to read games,
-				// FireStore will throw an error.
-				transaction.update( this.gameRef, {});
-			});
-		}).then( () => {
-			// Only when the game is successfully initialized we set the cookie.
-			// Otherwise the user might have a cookie set for a game that was not
-			// correctly initialized and perhaps does not exist in the database.
-			Cookies.set( 'gameId', this.gameId );
+	setErrorState( error ) {
+		this.setState({
+			appLoading: false,
+			newGameLoading: false,
+			error: error
+		});
+	}
 
-			// Register the snapshot listener listening for new game states
-			this.gameRef.onSnapshot( ( gameSnapshot ) => {
+	authenticate() {
+		return new Promise( ( resolve, reject ) => {
+			// Authenticate the user anonymously
+			firebase.auth().signInAnonymously()
+				.then( ( userCredential ) => {
+					resolve( userCredential.user )
+				})
+				.catch( ( error ) => {
+					reject( error );
+				});
+		});
+	}
+
+	getCurrentOrNewGameRef( user ) {
+		return new Promise( ( resolve, reject ) => {
+			let gameQuery = db.collection( 'games' )
+				.where( "owner", "==", user.uid )
+				.orderBy( "created_at", "desc" )
+				.limit( 1 );
+
+			gameQuery.get()
+				.then( ( querySnapshot ) => {
+					if ( querySnapshot.empty ) {
+						this.initializeNewGame()
+							.then( ( gameRef ) => {
+								resolve( gameRef );
+							})
+							.catch( ( error ) => {
+								reject( error );
+							});
+					} else {
+						resolve( db.collection( 'games' ).doc( querySnapshot.docs[0].id ) );
+					}
+				})
+				.catch( ( error ) => {
+					reject( error );
+				});
+		});
+	}
+
+	initializeNewGame() {
+		return new Promise( ( resolve, reject ) => {
+			let newGameId = uuidv4();
+			let gameRef = db.collection( 'games' ).doc( newGameId );
+
+			gameRef
+				.set({
+					cells: GameState.DEFAULT_START_VALUES,
+					owner: this.user.uid,
+					created_at: firebase.firestore.Timestamp.now()
+				})
+				.then( () => {
+					resolve( gameRef );
+				})
+				.catch( ( error ) => {
+					reject( error );
+				});
+		})
+	}
+
+	registerGameStateListener() {
+		this.unsubscribeGameStateListener = this.gameRef
+			.onSnapshot( ( gameSnapshot ) => {
 				this.setState( {
 					appLoading: false,
 					newGameLoading: false,
 					cells: gameSnapshot.data().cells
-				} )
-			} );
-		}).catch( ( error ) => {
-			this.setState({
-				appLoading: false,
-				newGameLoading: false,
-				error: error
-			})
-		});
+				});
+			}, ( error ) => {
+				this.setErrorState( error );
+			});
 	}
+
 	onToggleMenu() {
 		// Clear timeouts in case the user interacts with the menu to prevent the
 		// menu from collapsing when the user intentionally opened it.
@@ -146,13 +200,16 @@ export default class GameLoader extends React.PureComponent {
 			menuCollapsed: !this.state.menuCollapsed
 		})
 	}
-	onChange( newCells ) {
+
+	onGameStateChange( newCells ) {
 		this.gameRef.update({
 			cells: newCells
 		})
 	}
+
 	onStartNewGame() {
-		Cookies.remove( 'gameId' );
+		// No class function, just set when I register the snapshot listener
+		this.unsubscribeGameStateListener()
 
 		this.setState({
 			newGameLoading: true,
@@ -160,8 +217,14 @@ export default class GameLoader extends React.PureComponent {
 			cells: [],
 		});
 
-		this.initializeGame();
+		this.initializeNewGame()
+			.then( ( gameRef ) => {
+				this.gameRef = gameRef;
+
+				this.onGameStateChangePersisted()
+			} )
 	}
+
 	render() {
 		if( this.state.appLoading ) {
 			return <LoadingScreen key="loading-screen" />
@@ -171,12 +234,12 @@ export default class GameLoader extends React.PureComponent {
 			return (
 				<>
 					{ this.state.waitingForLoadingScreenToFade &&
-						<LoadingScreen
-							key="loading-screen"
-							faded={
-								!this.state.appLoading &&
-									this.state.waitingForLoadingScreenToFade
-							} />
+					<LoadingScreen
+						key="loading-screen"
+						faded={
+							!this.state.appLoading &&
+								this.state.waitingForLoadingScreenToFade
+						} />
 					}
 
 					<header className="conu__header">
@@ -209,7 +272,7 @@ export default class GameLoader extends React.PureComponent {
 					) : (
 						<Game
 							cells={ this.state.cells }
-							onChange={ ( newCells ) => this.onChange( newCells ) }
+							onChange={ ( newCells ) => this.onGameStateChange( newCells ) }
 							onStartNewGame={ () => this.onStartNewGame() } />
 					) }
 				</>
@@ -292,21 +355,21 @@ class Game extends React.PureComponent {
 					className="btn-cuboid--cell-matching-width"
 					showFace={ this.state.finished &&
 							!this.state.waitingForWonMessageToShow ? "top" : "front" }
-					Front={(
-						<BtnSingleLine
-							disabled={ this.state.finished }
-							onClick={ () => this.onExtendField() }>
-							Extend
-						</BtnSingleLine>
-					)}
-					Top={(
-						<BtnSingleLine
-							onClick={ () => this.props.onStartNewGame() }>
-							New Game
-						</BtnSingleLine>
-					)} />
+							Front={(
+								<BtnSingleLine
+									disabled={ this.state.finished }
+									onClick={ () => this.onExtendField() }>
+									Extend
+								</BtnSingleLine>
+							)}
+							Top={(
+								<BtnSingleLine
+									onClick={ () => this.props.onStartNewGame() }>
+									New Game
+								</BtnSingleLine>
+							)} />
 
-			</div>
+					</div>
 		);
 	}
 }
