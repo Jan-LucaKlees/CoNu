@@ -4,7 +4,8 @@ import WebFont from 'webfontloader';
 
 import './scss/main.scss';
 
-import UrlBasedContentSwitcher from './UrlBasedContentSwitcher';
+import Game from './Game';
+import RedirectNotice from './RedirectNotice';
 
 
 WebFont.load({
@@ -13,17 +14,15 @@ WebFont.load({
 	}
 });
 
-class CoNu extends React.PureComponent {
-	render() {
-		return (
-			<main className="conu">
-
-				<UrlBasedContentSwitcher />
-
-			</main>
-		);
-	}
-}
+const CoNu = () => (
+	<main className="conu">
+		{ window.location.host === HOSTNAME ? (
+			<Game />
+		) : (
+			<RedirectNotice />
+		)}
+	</main>
+);
 
 ReactDOM.render(
 	<CoNu />,
