@@ -1,11 +1,15 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import { Provider } from 'react-redux';
 import WebFont from 'webfontloader';
 
 import './scss/main.scss';
 
+import store from './redux/store';
+
 import Game from './Game';
 import RedirectNotice from './RedirectNotice';
+import AppLoader from './AppLoader';
 
 
 WebFont.load({
@@ -17,7 +21,7 @@ WebFont.load({
 const CoNu = () => (
 	<main className="conu">
 		{ window.location.host === HOSTNAME ? (
-			<Game />
+			<AppLoader />
 		) : (
 			<RedirectNotice />
 		)}
@@ -25,7 +29,9 @@ const CoNu = () => (
 );
 
 ReactDOM.render(
-	<CoNu />,
+	<Provider store={ store }>
+		<CoNu />
+	</Provider>,
 	document.getElementById('react-root')
 );
 
