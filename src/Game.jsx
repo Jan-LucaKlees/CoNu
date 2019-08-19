@@ -1,4 +1,5 @@
 import React from 'react';
+import { connect } from 'react-redux'
 import * as firebase from "firebase/app";
 import "firebase/auth";
 import { CSSTransition, TransitionGroup } from 'react-transition-group';
@@ -25,47 +26,10 @@ export default class GameLoader extends React.PureComponent {
 		this.collapseMenuTimeoutAfterNewGameLoaded = null;
 
 		this.state = {
-			appLoading: true,
-			newGameLoading: false,
 			error: null,
-			cells: [],
 			menuCollapsed: false,
 			waitingForLoadingScreenToFade: true
 		}
-	}
-
-	componentDidMount() {
-
-		// Authenticate user anonymously to get an uid for referencing the game
-		this.authenticate()
-			.then( ( user ) => {
-
-				console.debug( user.uid );
-
-				this.user = user;
-
-				// With our uid, we can now look up the users latest game, or create a
-				// new one in case the user hasn't played yet.
-				this.getCurrentOrNewGameRef( this.user )
-					.then( ( gameRef ) => {
-
-						// Set the game ref to be used in other functions.
-						this.gameRef = gameRef;
-
-						// finally, we register a listener for listening to changes in the
-						// database on the game we created or found for the user. We hook
-						// the listener to our components state.
-						this.registerGameStateListener()
-
-					})
-					.catch( ( error ) => {
-						this.setErrorState( error );
-					});
-
-			})
-			.catch( ( error ) => {
-				this.setErrorState( error );
-			})
 	}
 
 	componentDidUpdate( prevProps, prevState ) {
@@ -103,8 +67,6 @@ export default class GameLoader extends React.PureComponent {
 	}
 
 	componentWillUnmount() {
-		this.unsubscribeGameStateListener();
-
 		clearTimeout( this.collapseMenuTimeoutAfterAppLoaded );
 		clearTimeout( this.collapseMenuTimeoutAfterNewGameLoaded );
 	}
@@ -115,79 +77,6 @@ export default class GameLoader extends React.PureComponent {
 			newGameLoading: false,
 			error: error
 		});
-	}
-
-	authenticate() {
-		return new Promise( ( resolve, reject ) => {
-			// Authenticate the user anonymously
-			firebase.auth().signInAnonymously()
-				.then( ( userCredential ) => {
-					resolve( userCredential.user )
-				})
-				.catch( ( error ) => {
-					reject( error );
-				});
-		});
-	}
-
-	getCurrentOrNewGameRef( user ) {
-		return new Promise( ( resolve, reject ) => {
-			let gameQuery = db.collection( 'games' )
-				.where( "owner", "==", user.uid )
-				.orderBy( "created_at", "desc" )
-				.limit( 1 );
-
-			gameQuery.get()
-				.then( ( querySnapshot ) => {
-					if ( querySnapshot.empty ) {
-						this.initializeNewGame()
-							.then( ( gameRef ) => {
-								resolve( gameRef );
-							})
-							.catch( ( error ) => {
-								reject( error );
-							});
-					} else {
-						resolve( db.collection( 'games' ).doc( querySnapshot.docs[0].id ) );
-					}
-				})
-				.catch( ( error ) => {
-					reject( error );
-				});
-		});
-	}
-
-	initializeNewGame() {
-		return new Promise( ( resolve, reject ) => {
-			let newGameId = uuidv4();
-			let gameRef = db.collection( 'games' ).doc( newGameId );
-
-			gameRef
-				.set({
-					cells: GameState.DEFAULT_START_VALUES,
-					owner: this.user.uid,
-					created_at: firebase.firestore.Timestamp.now()
-				})
-				.then( () => {
-					resolve( gameRef );
-				})
-				.catch( ( error ) => {
-					reject( error );
-				});
-		})
-	}
-
-	registerGameStateListener() {
-		this.unsubscribeGameStateListener = this.gameRef
-			.onSnapshot( ( gameSnapshot ) => {
-				this.setState( {
-					appLoading: false,
-					newGameLoading: false,
-					cells: gameSnapshot.data().cells
-				});
-			}, ( error ) => {
-				this.setErrorState( error );
-			});
 	}
 
 	onToggleMenu() {
@@ -214,7 +103,6 @@ export default class GameLoader extends React.PureComponent {
 		this.setState({
 			newGameLoading: true,
 			error: null,
-			cells: [],
 		});
 
 		this.initializeNewGame()
@@ -226,62 +114,48 @@ export default class GameLoader extends React.PureComponent {
 	}
 
 	render() {
-		if( this.state.appLoading ) {
-			return <LoadingScreen key="loading-screen" />
-		} else if( this.state.error ) {
-			return "error: " + this.state.error
-		} else {
-			return (
-				<>
-					{ this.state.waitingForLoadingScreenToFade &&
-					<LoadingScreen
-						key="loading-screen"
-						faded={
-							!this.state.appLoading &&
-								this.state.waitingForLoadingScreenToFade
-						} />
-					}
+		return (
+			<>
+				<header className="conu__header">
 
-					<header className="conu__header">
+					<BtnInvisible
+						className="btn--logo"
+						onClick={ () => this.onToggleMenu() } >
+						<img
+							src={ Logo }
+							className="conu__logo" />
+					</BtnInvisible>
 
-						<BtnInvisible
-							className="btn--logo"
-							onClick={ () => this.onToggleMenu() } >
-							<img
-								src={ Logo }
-								className="conu__logo" />
-						</BtnInvisible>
+					<nav
+						className={ c( "conu__menu-wrapper", {
+							"conu__menu-wrapper--collapsed": this.state.menuCollapsed
+						} ) }>
+						<div className="menu">
+							<Btn
+								className="btn--menu-item"
+								onClick={ () => { this.onStartNewGame() } } >
+								New Game
+							</Btn>
+						</div>
+					</nav>
 
-						<nav
-							className={ c( "conu__menu-wrapper", {
-								"conu__menu-wrapper--collapsed": this.state.menuCollapsed
-							} ) }>
-							<div className="menu">
-								<Btn
-									className="btn--menu-item"
-									onClick={ () => { this.onStartNewGame() } } >
-									New Game
-								</Btn>
-							</div>
-						</nav>
+				</header>
 
-					</header>
-
-					{ this.state.newGameLoading ? (
-						<LoadingScreen className="loading-screen--content" />
-					) : (
-						<Game
-							cells={ this.state.cells }
-							onChange={ ( newCells ) => this.onGameStateChange( newCells ) }
-							onStartNewGame={ () => this.onStartNewGame() } />
-					) }
-				</>
-			);
-		}
+				{ this.state.newGameLoading ? (
+					<LoadingScreen className="loading-screen--content" />
+				) : (
+					<Game
+						onChange={ ( newCells ) => this.onGameStateChange( newCells ) }
+						onStartNewGame={ () => this.onStartNewGame() } />
+				) }
+			</>
+		);
 	}
 }
 
-class Game extends React.PureComponent {
+
+
+class _Game extends React.PureComponent {
 
 	constructor( props ) {
 		super( props );
@@ -373,4 +247,17 @@ class Game extends React.PureComponent {
 		);
 	}
 }
+
+const mapStateToProps = ( state ) => {
+	return {
+		cells: state.game.get( 'data' ).cells,
+	}
+}
+
+const mapDispatchToProps = {}
+
+const Game = connect(
+	mapStateToProps,
+	mapDispatchToProps
+)( _Game )
 

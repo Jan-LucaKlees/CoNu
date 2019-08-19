@@ -2,15 +2,28 @@ import React from 'react';
 import { connect } from 'react-redux'
 
 import { authenticateUser, USER_AUTHENTICATION_SUCCEEDED } from './redux/user';
+import { initializeGame, GAME_INITIALIZATION_SUCCEEDED, GAME_NOT_INITIALIZED } from './redux/game';
 
 import { LoadingScreen } from './LoadingIndicator';
+import Game from './Game';
 
 class AppLoader extends React.PureComponent {
 	componentDidMount() {
 		this.props.authenticateUser();
 	}
+	componentDidUpdate() {
+		if(
+			this.props.userStatus === USER_AUTHENTICATION_SUCCEEDED &&
+			this.props.gameStatus === GAME_NOT_INITIALIZED
+		) {
+			this.props.initializeGame();
+		}
+	}
 	render() {
-		let loading = !this.props.userAuthenticated;
+		let loading = !(
+			this.props.userStatus === USER_AUTHENTICATION_SUCCEEDED &&
+			this.props.gameStatus === GAME_INITIALIZATION_SUCCEEDED
+		);
 
 		if( loading ){
 			return(
@@ -18,7 +31,7 @@ class AppLoader extends React.PureComponent {
 			);
 		} else {
 			return (
-				"Logged in!"
+				<Game />
 			);
 		}
 	}
@@ -26,11 +39,12 @@ class AppLoader extends React.PureComponent {
 
 const mapStateToProps = ( state ) => {
 	return {
-		userAuthenticated: state.user.get( 'status' ) === USER_AUTHENTICATION_SUCCEEDED,
+		userStatus: state.user.get( 'status' ),
+		gameStatus: state.game.get( 'status' )
 	}
 }
 
-const mapDispatchToProps = { authenticateUser }
+const mapDispatchToProps = { authenticateUser, initializeGame }
 
 export default connect(
 	mapStateToProps,
