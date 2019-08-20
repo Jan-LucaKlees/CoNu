@@ -22,7 +22,6 @@ export default class GameLoader extends React.PureComponent {
 	constructor( props ) {
 		super( props );
 
-		this.collapseMenuTimeoutAfterAppLoaded = null;
 		this.collapseMenuTimeoutAfterNewGameLoaded = null;
 
 		this.state = {
@@ -33,26 +32,6 @@ export default class GameLoader extends React.PureComponent {
 	}
 
 	componentDidUpdate( prevProps, prevState ) {
-		// Collapse the menu after a while when the app is loaded an rendered
-		// This is to hint the user where to find the 'New Game' button
-		if(
-			prevState.appLoading === true &&
-			this.state.appLoading === false
-		) {
-			this.collapseMenuTimeoutAfterAppLoaded = setTimeout(
-				() => this.setState( {
-					menuCollapsed: true
-				} ),
-				1300
-			);
-			setTimeout(
-				() => this.setState( {
-					waitingForLoadingScreenToFade: false
-				} ),
-				300
-			);
-		}
-
 		// After the user started a new game and it is completely loaded and
 		// rendered, we hide the menu again to be in a more aestheticaly pleasing
 		// state.
@@ -67,27 +46,13 @@ export default class GameLoader extends React.PureComponent {
 	}
 
 	componentWillUnmount() {
-		clearTimeout( this.collapseMenuTimeoutAfterAppLoaded );
 		clearTimeout( this.collapseMenuTimeoutAfterNewGameLoaded );
 	}
 
 	setErrorState( error ) {
 		this.setState({
-			appLoading: false,
-			newGameLoading: false,
 			error: error
 		});
-	}
-
-	onToggleMenu() {
-		// Clear timeouts in case the user interacts with the menu to prevent the
-		// menu from collapsing when the user intentionally opened it.
-		clearTimeout( this.collapseMenuTimeoutAfterAppLoaded );
-		clearTimeout( this.collapseMenuTimeoutAfterNewGameLoaded );
-
-		this.setState({
-			menuCollapsed: !this.state.menuCollapsed
-		})
 	}
 
 	onGameStateChange( newCells ) {
@@ -116,31 +81,6 @@ export default class GameLoader extends React.PureComponent {
 	render() {
 		return (
 			<>
-				<header className="conu__header">
-
-					<BtnInvisible
-						className="btn--logo"
-						onClick={ () => this.onToggleMenu() } >
-						<img
-							src={ Logo }
-							className="conu__logo" />
-					</BtnInvisible>
-
-					<nav
-						className={ c( "conu__menu-wrapper", {
-							"conu__menu-wrapper--collapsed": this.state.menuCollapsed
-						} ) }>
-						<div className="menu">
-							<Btn
-								className="btn--menu-item"
-								onClick={ () => { this.onStartNewGame() } } >
-								New Game
-							</Btn>
-						</div>
-					</nav>
-
-				</header>
-
 				{ this.state.newGameLoading ? (
 					<LoadingScreen className="loading-screen--content" />
 				) : (
@@ -169,6 +109,7 @@ class _Game extends React.PureComponent {
 			selectedCell: null
 		}
 	}
+
 	componentDidUpdate( prevProps ) {
 		// Update the game states cells; yes, this is hacky
 		this.gameState.cells = this.props.cells;

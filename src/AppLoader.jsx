@@ -5,6 +5,7 @@ import { authenticateUser, USER_AUTHENTICATION_SUCCEEDED } from './redux/user';
 import { initializeGame, GAME_INITIALIZATION_SUCCEEDED, GAME_NOT_INITIALIZED } from './redux/game';
 
 import { LoadingScreen } from './LoadingIndicator';
+import Header from './Header';
 import Game from './Game';
 
 class AppLoader extends React.PureComponent {
@@ -30,7 +31,11 @@ class AppLoader extends React.PureComponent {
 				<LoadingScreen loading={ loading }/>
 
 				{ !loading && (
-					<Game />
+					<>
+						<Header />
+
+						<Game />
+					</>
 				) }
 			</>
 		);
