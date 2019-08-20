@@ -9,6 +9,7 @@ import uuidv4 from 'uuid/v1';
 
 import db from './db';
 import * as GameLogic from './GameLogic';
+import { extendField } from './redux/game';
 
 import Field from './Field';
 import Btn, { BtnSingleLine, BtnInvisible, BtnCuboid } from './Btn';
@@ -106,11 +107,6 @@ class _Game extends React.PureComponent {
 		}
 	}
 
-	onExtendField() {
-		this.gameState.extendField();
-		this.props.onChange( this.gameState.cells );
-	}
-
 	render() {
 		return (
 			<div className="game">
@@ -142,7 +138,7 @@ class _Game extends React.PureComponent {
 							Front={(
 								<BtnSingleLine
 									disabled={ this.props.finished }
-									onClick={ () => this.onExtendField() }>
+									onClick={ this.props.extendField }>
 									Extend
 								</BtnSingleLine>
 							)}
@@ -162,9 +158,9 @@ const mapStateToProps = ( state ) => {
 	return {
 		finished: GameLogic.isFinished( state.game.get( 'cells' ) ),
 	}
-}
+};
 
-const mapDispatchToProps = {}
+const mapDispatchToProps = { extendField };
 
 const Game = connect(
 	mapStateToProps,

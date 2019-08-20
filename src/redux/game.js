@@ -38,7 +38,9 @@ export default function gameReducer( state = initialGameState, action ) {
 			return state.withMutations( state => state
 				.set( 'selectedCell', null )
 				.set( 'cells', action.updatedCells )
-			)
+			);
+		case FIELD_EXTENSION_SUCCEEDED:
+			return state.set( 'cells', action.updatedCells );
 		default:
 			return state;
 	}
@@ -208,6 +210,45 @@ function pairCells( index1, index2 ) {
 		} else {
 			dispatch( cellPairingFailed( index1, index2, new Error( 'Cells are not pairable!' ) ) );
 		}
+	}
+}
+
+export const FIELD_EXTENSION_STARTED = 'FIELD_EXTENSION_STARTED';
+function fieldExtensionStarted() {
+	return {
+		type: FIELD_EXTENSION_STARTED,
+	}
+}
+
+export const FIELD_EXTENSION_SUCCEEDED = 'FIELD_EXTENSION_SUCCEEDED';
+function fieldExtensionSucceeded( updatedCells ) {
+	return {
+		type: FIELD_EXTENSION_SUCCEEDED,
+		updatedCells
+	}
+}
+
+export const FIELD_EXTENSION_FAILED = 'FIELD_EXTENSION_FAILED';
+function fieldExtensionFailed( error ) {
+	console.assert( error instanceof Error );
+
+	return {
+		type: FIELD_EXTENSION_FAILED,
+		error,
+	}
+}
+
+export function extendField() {
+	return ( dispatch, getState ) => {
+		dispatch( fieldExtensionStarted() );
+
+		let updatedCells = GameLogic.extendField( getState().game.get( 'cells' ) );
+
+		currentGameRef.update({
+			cells: updatedCells,
+		})
+			.then( () => dispatch( fieldExtensionSucceeded( updatedCells ) ) )
+			.catch( error => dispatch( fieldExtensionFailed( error ) ) )
 	}
 }
 
