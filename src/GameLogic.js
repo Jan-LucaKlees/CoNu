@@ -1,6 +1,7 @@
 const DEFAULT_START_VALUES = [1,2,3,4,5,6,7,8,9,1,1,1,2,1,3,1,4,1,5,1,6,1,7,1,8,1,9];
 const DEFAULT_WIDTH = 9;
 
+
 export function isValidCellValue( value ) {
 	return Number.isInteger( value ) && value != 0 && -9 <= value && value <= 9;
 }

@@ -8,7 +8,7 @@ import Cookies from 'js-cookie';
 import uuidv4 from 'uuid/v1';
 
 import db from './db';
-import GameState from './GameState';
+import * as GameLogic from './GameLogic';
 
 import Field from './Field';
 import Btn, { BtnSingleLine, BtnInvisible, BtnCuboid } from './Btn';
@@ -100,40 +100,12 @@ class _Game extends React.PureComponent {
 	constructor( props ) {
 		super( props );
 
-		this.gameState = new GameState( props.cells );
-
 		this.state = {
-			finished: this.gameState.isFinished(),
-			waitingForFieldToCollapse: false,
-			waitingForWonMessageToShow: false,
-			selectedCell: null
+			fieldExited: this.props.finished,
+			wonMessageEntered: false,
 		}
 	}
 
-	componentDidUpdate( prevProps ) {
-		// Update the game states cells; yes, this is hacky
-		this.gameState.cells = this.props.cells;
-
-		if( this.gameState.isFinished() && !this.state.finished ) {
-			this.setState({
-				finished: true,
-				waitingForFieldToCollapse: true,
-				waitingForWonMessageToShow: true,
-			});
-
-			setTimeout( () => {
-				this.setState({
-					waitingForFieldToCollapse: false,
-				});
-			}, 300);
-
-			setTimeout( () => {
-				this.setState({
-					waitingForWonMessageToShow: false,
-				});
-			}, 1000);
-		}
-	}
 	onSelectCell( index ) {
 		if(
 			this.state.selectedCell !== null &&
@@ -156,23 +128,32 @@ class _Game extends React.PureComponent {
 			<div className="game">
 
 				<div className="game__content">
-					{ this.state.finished && !this.state.waitingForFieldToCollapse ? (
+
+					<CSSTransition
+						in={ this.props.finished && this.state.fieldExited }
+						timeout={ 200 }
+						mountOnEnter={ true }
+						onEntered={ () => this.setState({ wonMessageEntered: true }) }
+						classNames="game__won-message">
 						<h2 className="game__won-message">You Won!</h2>
-					) : (
-						<Field
-							state={ this.gameState.field }
-							selectedCell={ this.state.selectedCell }
-							onSelectCell={ ( index ) => this.onSelectCell( index ) } />
-					) }
+					</CSSTransition>
+
+					<CSSTransition
+						in={ !this.props.finished }
+						timeout={ 300 }
+						onExited={ () => this.setState({ fieldExited: true }) }
+						classNames="field">
+						<Field />
+					</CSSTransition>
+
 				</div>
 
 				<BtnCuboid
 					className="btn-cuboid--cell-matching-width"
-					showFace={ this.state.finished &&
-							!this.state.waitingForWonMessageToShow ? "top" : "front" }
+					showFace={ this.props.finished && this.state.wonMessageEntered ? "top" : "front" }
 							Front={(
 								<BtnSingleLine
-									disabled={ this.state.finished }
+									disabled={ this.props.finished }
 									onClick={ () => this.onExtendField() }>
 									Extend
 								</BtnSingleLine>
@@ -191,7 +172,7 @@ class _Game extends React.PureComponent {
 
 const mapStateToProps = ( state ) => {
 	return {
-		cells: state.game.get( 'data' ).cells,
+		finished: GameLogic.isFinished( state.game.get( 'cells' ) ),
 	}
 }
 

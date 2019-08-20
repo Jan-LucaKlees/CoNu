@@ -5,17 +5,13 @@ import { Map } from 'immutable';
 
 import db from '../db';
 import { USER_AUTHENTICATION_SUCCEEDED } from './user';
-import GameState from '../GameState';
 
 
 export const GAME_NOT_INITIALIZED = 'GAME_NOT_INITIALIZED';
 
 const initialGameState = Map({
 	status: GAME_NOT_INITIALIZED,
-	id: null,
-	data: null,
-	gameRef: null,
-	unsubscribe: null,
+	cells: null,
 	selectedCell: null,
 });
 
@@ -30,13 +26,10 @@ export default function gameReducer( state = initialGameState, action ) {
 		case GAME_INITIALIZATION_SUCCEEDED:
 			return state.withMutations( state => state
 				.set( 'status', GAME_INITIALIZATION_SUCCEEDED )
-				.set( 'id', action.id )
-				.set( 'ref', action.ref )
-				.set( 'data', action.data )
-				.set( 'unsubscribe', action.unsubscribe )
+				.set( 'cells', action.initialCells )
 			);
 		case GAME_STATE_UPDATED:
-			return state.set( 'cells', action.cells );
+			return state.set( 'cells', action.updatedCells );
 		default:
 			return state;
 	}
@@ -50,17 +43,12 @@ function gameInitializationStarted() {
 }
 
 export const GAME_INITIALIZATION_SUCCEEDED = 'GAME_INITIALIZATION_SUCCEEDED';
-function gameInitializationSucceeded( id, ref, data, unsubscribe ) {
-	console.assert( typeof id == "string" );
-	console.assert( ref instanceof firebase.firestore.DocumentReference );
-	console.assert( typeof unsubscribe == "function" );
+function gameInitializationSucceeded( initialCells ) {
+	console.assert( Array.isArray( initialCells ) );
 
 	return {
 		type: GAME_INITIALIZATION_SUCCEEDED,
-		id: id,
-		ref: ref,
-		data: data,
-		unsubscribe: unsubscribe,
+		initialCells: initialCells
 	};
 }
 
@@ -75,10 +63,12 @@ function gameInitializationFailed( error ) {
 }
 
 export const GAME_STATE_UPDATED = 'GAME_STATE_UPDATED';
-function gameStateUpdated( data ) {
+function gameStateUpdated( updatedCells ) {
+	console.assert( Array.isArray( updatedCells ) );
+
 	return {
 		type: GAME_STATE_UPDATED,
-		data: data
+		updatedCells: updatedCells
 	}
 }
 
@@ -97,9 +87,9 @@ export function initializeGame() {
 								let data = gameSnapshot.data();
 								let gameStatus = getState().game.get( 'status' );
 								if( gameStatus === GAME_INITIALIZATION_SUCCEEDED ) {
-									dispatch( gameStateUpdated( data ) );
+									dispatch( gameStateUpdated( data.cells ) );
 								} else if( gameStatus === GAME_INITIALIZATION_STARTED ) {
-									dispatch( gameInitializationSucceeded( gameSnapshot.id, gameRef, data, unsubscribe ) );
+									dispatch( gameInitializationSucceeded( data.cells ) );
 								} else {
 									dispatch( gameInitializationFailed(
 										new Error( 'Game snapshot received without active game initialization going on!' )
