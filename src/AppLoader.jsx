@@ -25,15 +25,15 @@ class AppLoader extends React.PureComponent {
 			this.props.gameStatus === GAME_INITIALIZATION_SUCCEEDED
 		);
 
-		if( loading ){
-			return(
-				<LoadingScreen />
-			);
-		} else {
-			return (
-				<Game />
-			);
-		}
+		return (
+			<>
+				<LoadingScreen loading={ loading }/>
+
+				{ !loading && (
+					<Game />
+				) }
+			</>
+		);
 	}
 }
 
