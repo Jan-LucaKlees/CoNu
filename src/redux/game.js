@@ -2,9 +2,11 @@ import * as firebase from "firebase/app";
 import "firebase/auth";
 import "firebase/firestore";
 import { Map } from 'immutable';
+import uuidv4 from 'uuid/v4';
 
 import db from '../db';
 import { USER_AUTHENTICATION_SUCCEEDED } from './user';
+import * as GameLogic from '../GameLogic';
 
 
 export const GAME_NOT_INITIALIZED = 'GAME_NOT_INITIALIZED';
@@ -28,8 +30,6 @@ export default function gameReducer( state = initialGameState, action ) {
 				.set( 'status', GAME_INITIALIZATION_SUCCEEDED )
 				.set( 'cells', action.initialCells )
 			);
-		case GAME_STATE_UPDATED:
-			return state.set( 'cells', action.updatedCells );
 		default:
 			return state;
 	}
@@ -48,7 +48,7 @@ function gameInitializationSucceeded( initialCells ) {
 
 	return {
 		type: GAME_INITIALIZATION_SUCCEEDED,
-		initialCells: initialCells
+		initialCells,
 	};
 }
 
@@ -58,18 +58,8 @@ function gameInitializationFailed( error ) {
 
 	return {
 		type: GAME_INITIALIZATION_FAILED,
-		error: error
+		error,
 	};
-}
-
-export const GAME_STATE_UPDATED = 'GAME_STATE_UPDATED';
-function gameStateUpdated( updatedCells ) {
-	console.assert( Array.isArray( updatedCells ) );
-
-	return {
-		type: GAME_STATE_UPDATED,
-		updatedCells: updatedCells
-	}
 }
 
 export function initializeGame() {
@@ -79,36 +69,21 @@ export function initializeGame() {
 		let userStatus = getState().user.get( 'status' );
 
 		if( userStatus === USER_AUTHENTICATION_SUCCEEDED ) {
+
 			let user = firebase.auth().currentUser;
 
-			getCurrentOrNewGameIdForUser( user )
-				.then( gameRef => {
-					let unsubscribe = gameRef
-						.onSnapshot(
-							gameSnapshot => {
-								let data = gameSnapshot.data();
-								let gameStatus = getState().game.get( 'status' );
-								if( gameStatus === GAME_INITIALIZATION_SUCCEEDED ) {
-									dispatch( gameStateUpdated( data.cells ) );
-								} else if( gameStatus === GAME_INITIALIZATION_STARTED ) {
-									dispatch( gameInitializationSucceeded( data.cells ) );
-								} else {
-									dispatch( gameInitializationFailed(
-										new Error( 'Game snapshot received without active game initialization going on!' )
-									) );
-								}
-							},
-							error => dispatch( gameInitializationFailed( error ) )
-						);
-				})
-				.catch( error => dispatch( gameInitializationFailed( error ) ) );
+			getCurrentOrNewGameRefForUser( user )
+				.then( gameRef => gameRef.get() )
+				.then( gameSnapshot => dispatch( gameInitializationSucceeded( gameSnapshot.data().cells ) ) )
+				.catch( error => dispatch( gameInitializationFailed( error ) ));
+
 		} else {
-			dispatch( gameInitializationFailed( new Error( "No user authenticated!" ) ) );
+			dispatch( gameInitializationFailed( new Error( "User not authenticated!" ) ) );
 		}
 	};
 }
 
-function getCurrentOrNewGameIdForUser( user ) {
+function getCurrentOrNewGameRefForUser( user ) {
 	console.assert( user instanceof firebase.User );
 
 	return new Promise( ( resolve, reject ) => {
@@ -120,18 +95,19 @@ function getCurrentOrNewGameIdForUser( user ) {
 			.limit( 1 );
 
 		gameQuery.get()
-			.then( querySnapshot => querySnapshot.empty ? (
-				this.initializeNewGame( user )
-					.then( gameId => resolve( gameRef ) )
-					.catch( error => reject( error ) )
-			) : (
-				resolve( gamesCollection.doc( querySnapshot.docs[0].id ) )
-			))
+			.then( querySnapshot => {
+				if( querySnapshot.empty ) {
+					return initializeNewGameRef( user );
+				} else {
+					return gamesCollection.doc( querySnapshot.docs[0].id );
+				}
+			})
+			.then( gameRef => resolve( gameRef ) )
 			.catch( error => reject( error ) );
 	});
 }
 
-function initializeNewGame( user ) {
+function initializeNewGameRef( user ) {
 	console.assert( user instanceof firebase.User );
 
 	return new Promise( ( resolve, reject ) => {
@@ -141,7 +117,7 @@ function initializeNewGame( user ) {
 
 		newGameRef
 			.set({
-				cells: GameState.DEFAULT_START_VALUES,
+				cells: GameLogic.DEFAULT_START_VALUES,
 				owner: user.uid,
 				created_at: firebase.firestore.Timestamp.now()
 			})
