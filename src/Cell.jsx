@@ -8,10 +8,13 @@ import { selectOrPairCell } from './redux/game';
 import { BtnSingleLine } from './Btn';
 
 
-const Cell = ({ index, number, paired, selected, selectOrPairCell }) =>
+const Cell = ({ index, number, selected, pairing, paired, selectOrPairCell }) =>
 	<div className="field__cell-wrapper">
 		<BtnSingleLine
-			className={ c( 'btn--cell', { 'btn--selected': selected } ) }
+			className={ c( 'btn--cell', {
+				'btn--cell-selected': selected,
+				'btn--cell-pairing': pairing
+			} ) }
 			disabled={ paired }
 			onClick={ () => selectOrPairCell( index ) }>
 			{ number }
@@ -21,8 +24,9 @@ const Cell = ({ index, number, paired, selected, selectOrPairCell }) =>
 const mapStateToProps = ( state, props ) => {
 	return {
 		number: GameLogic.getCellNumber( state.game.get( 'cells' ), props.index ),
+		selected: state.game.get( 'selectedCell' ) == props.index,
+		pairing: state.game.get( 'pairingCells' ).includes( props.index ),
 		paired: GameLogic.isCellPaired( state.game.get( 'cells' ), props.index ),
-		selected: state.game.get( 'selectedCell' ) == props.index
 	}
 }
 

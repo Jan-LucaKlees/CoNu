@@ -36,13 +36,15 @@ $row-height: $btn-single-line-height + $cell-v-spacing;
 }
 
 .btn--cell {
-	@extend .btn--single-line;
-
 	width: 100%;
 	padding: 0.25rem 0;
 }
 
-.btn--selected {
+.btn--cell-selected {
 	background-color: #babcf0;
+}
+
+.btn--cell-pairing {
+	background-color: #baf0bc;
 }
 

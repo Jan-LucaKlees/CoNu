@@ -1,7 +1,7 @@
 import * as firebase from "firebase/app";
 import "firebase/auth";
 import "firebase/firestore";
-import { Map } from 'immutable';
+import { Map, Set } from 'immutable';
 import uuidv4 from 'uuid/v4';
 
 import db from '../db';
@@ -15,8 +15,9 @@ export const GAME_NOT_INITIALIZED = 'GAME_NOT_INITIALIZED';
 
 const initialGameState = Map({
 	status: GAME_NOT_INITIALIZED,
-	cells: null,
 	selectedCell: null,
+	pairingCells: Set(),
+	cells: null,
 });
 
 export default function gameReducer( state = initialGameState, action ) {
@@ -34,9 +35,14 @@ export default function gameReducer( state = initialGameState, action ) {
 			);
 		case CELL_SELECTED:
 			return state.set( 'selectedCell', action.cellIndex );
-		case CELL_PAIRING_SUCCEEDED:
+		case CELL_PAIRING_STARTED:
 			return state.withMutations( state => state
 				.set( 'selectedCell', null )
+				.set( 'pairingCells', state.get( 'pairingCells' ).union( [ action.index1, action.index2 ] ) )
+			);
+		case CELL_PAIRING_SUCCEEDED:
+			return state.withMutations( state => state
+				.set( 'pairingCells', state.get( 'pairingCells' ).subtract( [ action.index1, action.index2 ] ) )
 				.set( 'cells', action.updatedCells )
 			);
 		case FIELD_EXTENSION_SUCCEEDED:
