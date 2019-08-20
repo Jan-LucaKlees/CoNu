@@ -9,6 +9,8 @@ import { USER_AUTHENTICATION_SUCCEEDED } from './user';
 import * as GameLogic from '../GameLogic';
 
 
+let currentGameRef;
+
 export const GAME_NOT_INITIALIZED = 'GAME_NOT_INITIALIZED';
 
 const initialGameState = Map({
@@ -30,6 +32,13 @@ export default function gameReducer( state = initialGameState, action ) {
 				.set( 'status', GAME_INITIALIZATION_SUCCEEDED )
 				.set( 'cells', action.initialCells )
 			);
+		case CELL_SELECTED:
+			return state.set( 'selectedCell', action.cellIndex );
+		case CELL_PAIRING_SUCCEEDED:
+			return state.withMutations( state => state
+				.set( 'selectedCell', null )
+				.set( 'cells', action.updatedCells )
+			)
 		default:
 			return state;
 	}
@@ -120,5 +129,85 @@ function initializeNewGameRef( user ) {
 			.then( () => resolve( newGameRef ) )
 			.catch( error => reject( error ) );
 	})
+}
+
+export const CELL_SELECTED = 'CELL_SELECTED';
+function cellSelected( cellIndex ) {
+	return {
+		type: CELL_SELECTED,
+		cellIndex,
+	}
+}
+
+export function selectOrPairCell( nextSelectedCell ) {
+	return ( dispatch, getState ) => {
+		let cells = getState().game.get( 'cells' );
+		let selectedCell = getState().game.get( 'selectedCell' );
+
+		if(
+			selectedCell !== null &&
+			GameLogic.isValidCellIndex( cells, nextSelectedCell ) &&
+			GameLogic.areCellsPairable( cells, selectedCell, nextSelectedCell )
+		){
+			dispatch( pairCells( selectedCell, nextSelectedCell ) );
+		} else {
+			dispatch( cellSelected( nextSelectedCell ) );
+		}
+	}
+}
+
+export const CELL_PAIRING_STARTED = 'CELL_PAIRING_STARTED';
+function cellPairingStarted( index1, index2 ) {
+	return {
+		type: CELL_PAIRING_STARTED,
+		index1,
+		index2,
+	}
+}
+
+export const CELL_PAIRING_SUCCEEDED = 'CELL_PAIRING_SUCCEEDED';
+function cellPairingSucceeded( index1, index2, updatedCells) {
+	return {
+		type: CELL_PAIRING_SUCCEEDED,
+		index1,
+		index2,
+		updatedCells
+	}
+}
+
+export const CELL_PAIRING_FAILED = 'CELL_PAIRING_FAILED';
+function cellPairingFailed( index1, index2, error ) {
+	console.assert( error instanceof Error );
+
+	return {
+		type: CELL_PAIRING_FAILED,
+		index1,
+		index2,
+		error,
+	}
+}
+
+function pairCells( index1, index2 ) {
+	return ( dispatch, getState ) => {
+		dispatch( cellPairingStarted( index1, index2 ) );
+
+		let cells = getState().game.get( 'cells' );
+
+		if(
+			GameLogic.isValidCellIndex( cells, index1 ) &&
+			GameLogic.isValidCellIndex( cells, index2 ) &&
+			GameLogic.areCellsPairable( cells, index1, index2 )
+		) {
+			let updatedCells = GameLogic.pairCells( cells, index1, index2 );
+
+			currentGameRef.update({
+				cells: updatedCells,
+			})
+				.then( () => dispatch( cellPairingSucceeded( index1, index2, updatedCells ) ) )
+				.catch( error => dispatch( cellPairingFailed( index1, index2, error ) ) )
+		} else {
+			dispatch( cellPairingFailed( index1, index2, new Error( 'Cells are not pairable!' ) ) );
+		}
+	}
 }
 

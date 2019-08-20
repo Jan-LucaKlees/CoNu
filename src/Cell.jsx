@@ -3,16 +3,17 @@ import { connect } from 'react-redux'
 import c from 'classnames'
 
 import * as GameLogic from './GameLogic';
+import { selectOrPairCell } from './redux/game';
 
 import { BtnSingleLine } from './Btn';
 
 
-const Cell = ({ number, paired, selected, selectCell }) =>
+const Cell = ({ index, number, paired, selected, selectOrPairCell }) =>
 	<div className="field__cell-wrapper">
 		<BtnSingleLine
 			className={ c( 'btn--cell', { 'btn--selected': selected } ) }
 			disabled={ paired }
-			onClick={ selectCell }>
+			onClick={ () => selectOrPairCell( index ) }>
 			{ number }
 		</BtnSingleLine>
 	</div>
@@ -25,7 +26,7 @@ const mapStateToProps = ( state, props ) => {
 	}
 }
 
-const mapDispatchToProps = {}
+const mapDispatchToProps = { selectOrPairCell }
 
 export default connect(
 	mapStateToProps,

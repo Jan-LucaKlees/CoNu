@@ -106,23 +106,11 @@ class _Game extends React.PureComponent {
 		}
 	}
 
-	onSelectCell( index ) {
-		if(
-			this.state.selectedCell !== null &&
-			this.gameState.areCellsPairable( this.state.selectedCell, index )
-		){
-			this.gameState.pairCells( this.state.selectedCell, index );
-			this.props.onChange( this.gameState.cells );
-		} else {
-			this.setState({
-				selectedCell: index
-			});
-		}
-	}
 	onExtendField() {
 		this.gameState.extendField();
 		this.props.onChange( this.gameState.cells );
 	}
+
 	render() {
 		return (
 			<div className="game">
