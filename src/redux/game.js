@@ -76,10 +76,12 @@ export function initializeGame() {
 	return ( dispatch, getState ) => {
 		dispatch( gameInitializationStarted() );
 
-		let user = getState().user;
+		let userStatus = getState().user.get( 'status' );
 
-		if( user.get( 'status' ) === USER_AUTHENTICATION_SUCCEEDED ) {
-			getCurrentOrNewGameIdForUser( user.get( 'data' ) )
+		if( userStatus === USER_AUTHENTICATION_SUCCEEDED ) {
+			let user = firebase.auth().currentUser;
+
+			getCurrentOrNewGameIdForUser( user )
 				.then( gameRef => {
 					let unsubscribe = gameRef
 						.onSnapshot(

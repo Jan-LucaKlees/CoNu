@@ -6,7 +6,6 @@ import { Map } from 'immutable';
 export const USER_NOT_AUTHENTICATED = 'USER_NOT_AUTHENTICATED';
 const initialUserState = Map({
 	status: USER_NOT_AUTHENTICATED,
-	data: null
 });
 
 export default function userReducer( state = initialUserState, action ) {
@@ -18,10 +17,7 @@ export default function userReducer( state = initialUserState, action ) {
 		case USER_AUTHENTICATION_FAILED:
 			return state.set( 'status', USER_AUTHENTICATION_FAILED );
 		case USER_AUTHENTICATION_SUCCEEDED:
-			return state.withMutations( state => state
-				.set( 'status', USER_AUTHENTICATION_SUCCEEDED )
-				.set( 'data', action.user )
-			)
+			return state.set( 'status', USER_AUTHENTICATION_SUCCEEDED );
 		default:
 			return state;
 	}
@@ -35,12 +31,9 @@ function userAuthenticationStarted() {
 }
 
 export const USER_AUTHENTICATION_SUCCEEDED = 'USER_AUTHENTICATION_SUCCEEDED';
-function userAuthenticationSucceeded( user ) {
-	console.assert( user instanceof firebase.User );
-
+function userAuthenticationSucceeded() {
 	return {
 		type: USER_AUTHENTICATION_SUCCEEDED,
-		user: user
 	};
 }
 
@@ -59,7 +52,7 @@ export function authenticateUser() {
 		dispatch( userAuthenticationStarted() );
 
 		firebase.auth().signInAnonymously()
-			.then( userCredential => dispatch( userAuthenticationSucceeded( userCredential.user ) ) )
+			.then( userCredential => dispatch( userAuthenticationSucceeded() ) )
 			.catch( error => dispatch( userAuthenticationFailed( error ) ) );
 	};
 }
