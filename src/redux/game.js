@@ -66,20 +66,16 @@ export function initializeGame() {
 	return ( dispatch, getState ) => {
 		dispatch( gameInitializationStarted() );
 
-		let userStatus = getState().user.get( 'status' );
+		let user = firebase.auth().currentUser;
 
-		if( userStatus === USER_AUTHENTICATION_SUCCEEDED ) {
+		getCurrentOrNewGameRefForUser( user )
+			.then( gameRef => {
+				currentGameRef = gameRef;
+				return gameRef.get();
+			} )
+			.then( gameSnapshot => dispatch( gameInitializationSucceeded( gameSnapshot.data().cells ) ) )
+			.catch( error => dispatch( gameInitializationFailed( error ) ));
 
-			let user = firebase.auth().currentUser;
-
-			getCurrentOrNewGameRefForUser( user )
-				.then( gameRef => gameRef.get() )
-				.then( gameSnapshot => dispatch( gameInitializationSucceeded( gameSnapshot.data().cells ) ) )
-				.catch( error => dispatch( gameInitializationFailed( error ) ));
-
-		} else {
-			dispatch( gameInitializationFailed( new Error( "User not authenticated!" ) ) );
-		}
 	};
 }
 
