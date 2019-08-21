@@ -118,7 +118,7 @@ export default class GameLoader extends React.PureComponent {
 			// Only when the game is successfully initialized we set the cookie.
 			// Otherwise the user might have a cookie set for a game that was not
 			// correctly initialized and perhaps does not exist in the database.
-			Cookies.set( 'gameId', this.gameId );
+			Cookies.set( 'gameId', this.gameId, { expires: 365 } );
 
 			// Register the snapshot listener listening for new game states
 			this.gameRef.onSnapshot( ( gameSnapshot ) => {
