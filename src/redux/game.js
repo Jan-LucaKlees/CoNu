@@ -17,6 +17,7 @@ const initialGameState = Map({
 	status: GAME_NOT_INITIALIZED,
 	selectedCell: null,
 	pairingCells: Set(),
+	extendingField: false,
 	cells: null,
 });
 
@@ -24,6 +25,7 @@ export default function gameReducer( state = initialGameState, action ) {
 	console.assert( state instanceof Map );
 
 	switch( action.type ) {
+
 		case GAME_INITIALIZATION_STARTED:
 			return state.set( 'status', GAME_INITIALIZATION_STARTED );
 		case GAME_INITIALIZATION_FAILED:
@@ -33,8 +35,10 @@ export default function gameReducer( state = initialGameState, action ) {
 				.set( 'status', GAME_INITIALIZATION_SUCCEEDED )
 				.set( 'cells', action.initialCells )
 			);
+
 		case CELL_SELECTED:
 			return state.set( 'selectedCell', action.cellIndex );
+
 		case CELL_PAIRING_STARTED:
 			return state.withMutations( state => state
 				.set( 'selectedCell', null )
@@ -45,8 +49,15 @@ export default function gameReducer( state = initialGameState, action ) {
 				.set( 'pairingCells', state.get( 'pairingCells' ).subtract( [ action.index1, action.index2 ] ) )
 				.set( 'cells', action.updatedCells )
 			);
+
+		case FIELD_EXTENSION_STARTED:
+			return state.set( 'extendingField', true );
 		case FIELD_EXTENSION_SUCCEEDED:
-			return state.set( 'cells', action.updatedCells );
+			return state.withMutations( state => state
+				.set( 'extendingField', false )
+				.set( 'cells', action.updatedCells )
+			);
+
 		default:
 			return state;
 	}

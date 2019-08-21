@@ -137,7 +137,7 @@ class _Game extends React.PureComponent {
 					showFace={ this.props.finished && this.state.wonMessageEntered ? "top" : "front" }
 							Front={(
 								<BtnSingleLine
-									disabled={ this.props.finished }
+									disabled={ this.props.finished || this.props.extendingField }
 									onClick={ this.props.extendField }>
 									Extend
 								</BtnSingleLine>
@@ -156,6 +156,7 @@ class _Game extends React.PureComponent {
 
 const mapStateToProps = ( state ) => {
 	return {
+		extendingField: state.game.get( 'extendingField' ),
 		finished: GameLogic.isFinished( state.game.get( 'cells' ) ),
 	}
 };
