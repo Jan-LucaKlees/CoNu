@@ -290,23 +290,23 @@ th {
   0%, 100% {
     transform: translateZ(-2rem) rotateX(0) rotateY(0) rotateZ 0; }
   10% {
-    transform: translateZ(-2rem) rotateX(37deg) rotateY(86deg) rotateZ(100deg); }
+    transform: translateZ(-2rem) rotateX(160deg) rotateY(95deg) rotateZ(137deg); }
   20% {
-    transform: translateZ(-2rem) rotateX(299deg) rotateY(79deg) rotateZ(188deg); }
+    transform: translateZ(-2rem) rotateX(307deg) rotateY(158deg) rotateZ(157deg); }
   30% {
-    transform: translateZ(-2rem) rotateX(224deg) rotateY(3deg) rotateZ(285deg); }
+    transform: translateZ(-2rem) rotateX(70deg) rotateY(23deg) rotateZ(203deg); }
   40% {
-    transform: translateZ(-2rem) rotateX(94deg) rotateY(163deg) rotateZ(117deg); }
+    transform: translateZ(-2rem) rotateX(322deg) rotateY(117deg) rotateZ(211deg); }
   50% {
-    transform: translateZ(-2rem) rotateX(108deg) rotateY(62deg) rotateZ(174deg); }
+    transform: translateZ(-2rem) rotateX(70deg) rotateY(219deg) rotateZ(315deg); }
   60% {
-    transform: translateZ(-2rem) rotateX(47deg) rotateY(278deg) rotateZ(134deg); }
+    transform: translateZ(-2rem) rotateX(122deg) rotateY(36deg) rotateZ(120deg); }
   70% {
-    transform: translateZ(-2rem) rotateX(254deg) rotateY(136deg) rotateZ(172deg); }
+    transform: translateZ(-2rem) rotateX(191deg) rotateY(285deg) rotateZ(46deg); }
   80% {
-    transform: translateZ(-2rem) rotateX(187deg) rotateY(105deg) rotateZ(149deg); }
+    transform: translateZ(-2rem) rotateX(115deg) rotateY(229deg) rotateZ(220deg); }
   90% {
-    transform: translateZ(-2rem) rotateX(176deg) rotateY(146deg) rotateZ(318deg); } }
+    transform: translateZ(-2rem) rotateX(36deg) rotateY(307deg) rotateZ(40deg); } }
   .loading-indicator__face {
     position: absolute;
     width: inherit;
