@@ -3,7 +3,6 @@ import * as firebase from "firebase/app";
 import "firebase/auth";
 import { CSSTransition, TransitionGroup } from 'react-transition-group';
 import c from 'classnames';
-import Cookies from 'js-cookie';
 import uuidv4 from 'uuid/v1';
 
 import db from './db';
