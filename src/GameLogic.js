@@ -1,5 +1,5 @@
 export const DEFAULT_START_VALUES = [1,2,3,4,5,6,7,8,9,1,1,1,2,1,3,1,4,1,5,1,6,1,7,1,8,1,9];
-const DEFAULT_WIDTH = 9;
+export const DEFAULT_WIDTH = 9;
 
 
 export function isValidCellValue( value ) {
@@ -47,16 +47,6 @@ export function isCellPaired( cells, index ) {
 	return !isCellPairable( cells, index );
 }
 
-export function getCell( cells, index ) {
-	console.assert( isValidCellIndex( cells, index ) );
-
-	return {
-		index: index,
-		number: getCellNumber( cells, index ),
-		paired: isCellPaired( cells, index )
-	};
-}
-
 export function markCellAsPaired( cells, index ) {
 	console.assert( isCellPairable( cells, index ) );
 
@@ -84,7 +74,13 @@ export function isValidRowIndex( cells, rowIndex ) {
 	return 0 <= rowIndex && rowIndex < getRowCount( cells );
 }
 
-export function* getCellsForRow( cells, rowIndex ) {
+export function* getRowIndices( cells ) {
+	for (let i = 0; i < getRowCount( cells ); i++) {
+		yield i;
+	}
+}
+
+export function* getCellIndicesForRow( cells, rowIndex ) {
 	console.assert( isValidRowIndex( cells, rowIndex ) );
 
 	let start = rowIndex * DEFAULT_WIDTH;
@@ -93,32 +89,24 @@ export function* getCellsForRow( cells, rowIndex ) {
 		getCellCount( cells )
 	);
 	for (let i = start; i < stop; i++) {
-		yield getCell( cells, i );
+		yield i;
 	}
 }
 
-export function getRow( cells, rowIndex ) {
-	console.assert( isValidRowIndex( cells, rowIndex ) );
-
-	let rowCells = Array.from( getCellsForRow( cells, rowIndex ) );
-
-	return {
-		index: rowIndex,
-		cells: rowCells,
-		hasPairableCells: () => cells.some( ( cell ) => !cell.paired ),
-		isLast: () => rowIndex == getRowCount() -1
-	};
-}
-
-export function* getRows( cells ) {
-	for (let i = 0; i < getRowCount( cells ); i++) {
-		yield getRow( cells, i );
+export function hasRowPairableCells( cells, rowIndex ) {
+	for( let cellIndex of getCellIndicesForRow( cells, rowIndex ) ) {
+		if( isCellPairable( cells, cellIndex ) ) {
+			return true;
+		}
 	}
+	return false;
 }
 
-export function getField( cells ) {
-	return {
-		rows: Array.from( getRows( cells ) )
+export function* getRowIndicesWithPairableCells( cells ) {
+	for( let rowIndex of getRowIndices( cells ) ) {
+		if( hasRowPairableCells( cells, rowIndex ) ) {
+			yield rowIndex;
+		}
 	}
 }
 
