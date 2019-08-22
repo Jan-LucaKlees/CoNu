@@ -2,7 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux'
 import { CSSTransition } from 'react-transition-group';
 
-import { toggleMenu, collapseMenuWithTimeout } from './redux/header';
+import { toggleMenu, showMenu, collapseMenuWithTimeout } from './redux/header';
 import { startNewGame, GAME_INITIALIZATION_SUCCEEDED } from './redux/game';
 
 import Btn, { BtnInvisible } from './Btn';
@@ -16,7 +16,28 @@ class Header extends React.PureComponent {
 		this.collapseMenuTimeout = this.props.collapseMenuWithTimeout( 1300 );
 	}
 
+	componentDidUpdate( prevProps ) {
+		if( prevProps.newGameLoading == true && this.props.newGameLoading == false ) {
+			this.collapseMenuTimeout = this.props.collapseMenuWithTimeout( 500 );
+		}
+	}
+
 	componentWillUnmount() {
+		clearTimeout( this.collapseMenuTimeout );
+	}
+
+	onStartNewGame() {
+		// Dispatch the corresponding action
+		this.props.startNewGame();
+
+		// In case the menu is just in the closing animation,
+		// prevent it from doing so
+		if( this.props.menuCollapsed ) {
+			this.props.showMenu();
+		}
+
+		// In case the menu is sceduled to be closed, clear the timout so that it
+		// will stay open up until the game is loaded
 		clearTimeout( this.collapseMenuTimeout );
 	}
 
@@ -29,7 +50,7 @@ class Header extends React.PureComponent {
 				</BtnInvisible>
 
 				<CSSTransition
-					in={ this.props.showMenu }
+					in={ !this.props.menuCollapsed }
 					timeout={ 300 }
 					classNames="conu__menu-wrapper">
 
@@ -37,8 +58,8 @@ class Header extends React.PureComponent {
 						<div className="menu">
 							<Btn
 								className="btn--menu-item"
-								disabled={ this.props.gameLoading }
-								onClick={ this.props.startNewGame } >
+								disabled={ this.props.newGameLoading }
+								onClick={ () => this.onStartNewGame() } >
 								New Game
 							</Btn>
 						</div>
@@ -53,12 +74,12 @@ class Header extends React.PureComponent {
 
 const mapStateToProps = ( state ) => {
 	return {
-		showMenu: state.header.get( 'showMenu' ),
-		gameLoading: state.game.get( 'status' ) != GAME_INITIALIZATION_SUCCEEDED
+		menuCollapsed: state.header.get( 'menuCollapsed' ),
+		newGameLoading: state.game.get( 'status' ) != GAME_INITIALIZATION_SUCCEEDED && !state.initialLoading
 	}
 };
 
-const mapDispatchToProps = { toggleMenu, collapseMenuWithTimeout, startNewGame };
+const mapDispatchToProps = { toggleMenu, showMenu, collapseMenuWithTimeout, startNewGame };
 
 export default connect(
 	mapStateToProps,

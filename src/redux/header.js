@@ -5,7 +5,7 @@ import { Map } from 'immutable';
 let timeout;
 
 const initialHeaderState = Map({
-	showMenu: true
+	menuCollapsed: false
 });
 
 export default function headerReducer( state = initialHeaderState, action ) {
@@ -13,9 +13,11 @@ export default function headerReducer( state = initialHeaderState, action ) {
 
 	switch( action.type ) {
 		case TOGGLE_MENU:
-			return state.set( 'showMenu', !state.get( 'showMenu' ) );
+			return state.set( 'menuCollapsed', !state.get( 'menuCollapsed' ) );
+		case SHOW_MENU:
+			return state.set( 'menuCollapsed', false );
 		case COLLAPSE_MENU:
-			return state.set( 'showMenu', false );
+			return state.set( 'menuCollapsed', true );
 		default:
 			return state;
 	}
@@ -29,6 +31,17 @@ export function toggleMenu() {
 
 	return {
 		type: TOGGLE_MENU
+	};
+}
+
+export const SHOW_MENU = 'SHOW_MENU';
+export function showMenu() {
+	// in case there is a timout running for a sceduled state change of the menu,
+	// clear it, as manual intervention should override scheduled events.
+	clearTimeout( timeout );
+
+	return {
+		type: SHOW_MENU,
 	};
 }
 
