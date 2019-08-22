@@ -1,21 +1,12 @@
 import React from 'react';
 import { connect } from 'react-redux'
-import * as firebase from "firebase/app";
-import "firebase/auth";
-import { CSSTransition, TransitionGroup } from 'react-transition-group';
-import c from 'classnames';
-import Cookies from 'js-cookie';
-import uuidv4 from 'uuid/v1';
+import { CSSTransition } from 'react-transition-group';
 
-import db from './db';
 import * as GameLogic from './GameLogic';
-import { extendField } from './redux/game';
+import { extendField, startNewGame } from './redux/game';
 
 import Field from './Field';
-import Btn, { BtnSingleLine, BtnInvisible, BtnCuboid } from './Btn';
-import LoadingIndicator, { LoadingScreen } from './LoadingIndicator';
-
-import Logo from '../assets/images/conu-logo.svg';
+import { BtnSingleLine, BtnCuboid } from './Btn';
 
 
 class Game extends React.PureComponent {
@@ -66,7 +57,7 @@ class Game extends React.PureComponent {
 							)}
 							Top={(
 								<BtnSingleLine
-									onClick={ () => this.props.onStartNewGame() }>
+									onClick={ this.props.startNewGame }>
 									New Game
 								</BtnSingleLine>
 							)} />
@@ -83,7 +74,7 @@ const mapStateToProps = ( state ) => {
 	}
 };
 
-const mapDispatchToProps = { extendField };
+const mapDispatchToProps = { extendField, startNewGame };
 
 export default connect(
 	mapStateToProps,
