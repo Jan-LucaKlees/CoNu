@@ -3,6 +3,7 @@ import { connect } from 'react-redux'
 import { CSSTransition } from 'react-transition-group';
 
 import { toggleMenu, collapseMenuWithTimeout } from './redux/header';
+import { startNewGame } from './redux/game';
 
 import Btn, { BtnInvisible } from './Btn';
 
@@ -36,7 +37,7 @@ class Header extends React.PureComponent {
 						<div className="menu">
 							<Btn
 								className="btn--menu-item"
-								onClick={ () => { /* this.onStartNewGame() */ } } >
+								onClick={ this.props.startNewGame } >
 								New Game
 							</Btn>
 						</div>
@@ -55,7 +56,7 @@ const mapStateToProps = ( state ) => {
 	}
 };
 
-const mapDispatchToProps = { toggleMenu, collapseMenuWithTimeout };
+const mapDispatchToProps = { toggleMenu, collapseMenuWithTimeout, startNewGame };
 
 export default connect(
 	mapStateToProps,

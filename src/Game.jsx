@@ -18,85 +18,7 @@ import LoadingIndicator, { LoadingScreen } from './LoadingIndicator';
 import Logo from '../assets/images/conu-logo.svg';
 
 
-export default class GameLoader extends React.PureComponent {
-
-	constructor( props ) {
-		super( props );
-
-		this.collapseMenuTimeoutAfterNewGameLoaded = null;
-
-		this.state = {
-			error: null,
-			menuCollapsed: false,
-			waitingForLoadingScreenToFade: true
-		}
-	}
-
-	componentDidUpdate( prevProps, prevState ) {
-		// After the user started a new game and it is completely loaded and
-		// rendered, we hide the menu again to be in a more aestheticaly pleasing
-		// state.
-		if(
-			prevState.newGameLoading === true &&
-			this.state.newGameLoading === false
-		) {
-			this.collapseMenuTimeoutAfterNewGameLoaded = setTimeout(
-				() => this.setState( { menuCollapsed: true } )
-				, 300 );
-		}
-	}
-
-	componentWillUnmount() {
-		clearTimeout( this.collapseMenuTimeoutAfterNewGameLoaded );
-	}
-
-	setErrorState( error ) {
-		this.setState({
-			error: error
-		});
-	}
-
-	onGameStateChange( newCells ) {
-		this.gameRef.update({
-			cells: newCells
-		})
-	}
-
-	onStartNewGame() {
-		// No class function, just set when I register the snapshot listener
-		this.unsubscribeGameStateListener()
-
-		this.setState({
-			newGameLoading: true,
-			error: null,
-		});
-
-		this.initializeNewGame()
-			.then( ( gameRef ) => {
-				this.gameRef = gameRef;
-
-				this.onGameStateChangePersisted()
-			} )
-	}
-
-	render() {
-		return (
-			<>
-				{ this.state.newGameLoading ? (
-					<LoadingScreen className="loading-screen--content" />
-				) : (
-					<Game
-						onChange={ ( newCells ) => this.onGameStateChange( newCells ) }
-						onStartNewGame={ () => this.onStartNewGame() } />
-				) }
-			</>
-		);
-	}
-}
-
-
-
-class _Game extends React.PureComponent {
+class Game extends React.PureComponent {
 
 	constructor( props ) {
 		super( props );
@@ -163,8 +85,8 @@ const mapStateToProps = ( state ) => {
 
 const mapDispatchToProps = { extendField };
 
-const Game = connect(
+export default connect(
 	mapStateToProps,
 	mapDispatchToProps
-)( _Game )
+)( Game )
 

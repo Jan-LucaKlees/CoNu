@@ -27,7 +27,7 @@ export default function gameReducer( state = initialGameState, action ) {
 	switch( action.type ) {
 
 		case GAME_INITIALIZATION_STARTED:
-			return state.set( 'status', GAME_INITIALIZATION_STARTED );
+			return initialGameState.set( 'status', GAME_INITIALIZATION_STARTED );
 		case GAME_INITIALIZATION_FAILED:
 			return state.set( 'status', GAME_INITIALIZATION_FAILED );
 		case GAME_INITIALIZATION_SUCCEEDED:
@@ -105,6 +105,22 @@ export function initializeGame() {
 			.catch( error => dispatch( gameInitializationFailed( error ) ));
 
 	};
+}
+
+export function startNewGame() {
+	return dispatch => {
+		dispatch( gameInitializationStarted() );
+
+		let user = firebase.auth().currentUser;
+
+		initializeNewGameRef( user )
+			.then( gameRef => {
+				currentGameRef = gameRef;
+				return gameRef.get();
+			} )
+			.then( gameSnapshot => dispatch( gameInitializationSucceeded( gameSnapshot.data().cells ) ) )
+			.catch( error => dispatch( gameInitializationFailed( error ) ));
+	}
 }
 
 function getCurrentOrNewGameRefForUser( user ) {
