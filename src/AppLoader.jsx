@@ -21,22 +21,21 @@ class AppLoader extends React.PureComponent {
 		}
 	}
 	render() {
-		let loading = !(
-			this.props.userStatus === USER_AUTHENTICATION_SUCCEEDED &&
-			this.props.gameStatus === GAME_INITIALIZATION_SUCCEEDED
-		);
-
 		return (
 			<>
-				<LoadingScreen loading={ loading }/>
-
-				{ !loading && (
+				{ !this.props.initialLoading && (
 					<>
 						<Header />
 
-						<Game />
+						{ this.props.gameStatus == GAME_INITIALIZATION_SUCCEEDED ? (
+							<Game />
+						) : (
+							<LoadingScreen className="loading-screen--content" />
+						) }
 					</>
-				) }
+				)}
+
+				<LoadingScreen loading={ this.props.initialLoading }/>
 			</>
 		);
 	}
@@ -45,7 +44,8 @@ class AppLoader extends React.PureComponent {
 const mapStateToProps = ( state ) => {
 	return {
 		userStatus: state.user.get( 'status' ),
-		gameStatus: state.game.get( 'status' )
+		gameStatus: state.game.get( 'status' ),
+		initialLoading: state.initialLoading
 	}
 }
 

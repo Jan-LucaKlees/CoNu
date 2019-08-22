@@ -1,5 +1,6 @@
 import React from 'react';
 import { CSSTransition } from 'react-transition-group';
+import c from 'classnames';
 
 
 const LoadingIndicator = ( { loading } ) => (
@@ -15,10 +16,10 @@ const LoadingIndicator = ( { loading } ) => (
 	</div>
 );
 
-const LoadingScreen = ( { loading, className } ) => (
+const LoadingScreen = ( { loading = true, className } ) => (
 	<CSSTransition in={ loading } timeout={ 300 } classNames="loading-screen">
 		{ state => state != 'exited' && (
-			<div className="loading-screen" >
+			<div className={ c( "loading-screen", className ) } >
 				<LoadingIndicator key="loading-indicator" />
 			</div>
 		) }
