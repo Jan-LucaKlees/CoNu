@@ -5,7 +5,7 @@ import { Map, Set } from 'immutable';
 import uuidv4 from 'uuid/v4';
 
 import db from '../db';
-import { USER_AUTHENTICATION_SUCCEEDED } from './user';
+import { USER_AUTHENTICATION_SUCCEEDED } from './userReducer';
 import * as GameLogic from '../GameLogic';
 
 

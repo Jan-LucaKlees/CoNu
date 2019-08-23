@@ -1,8 +1,8 @@
 import React from 'react';
 import { connect } from 'react-redux'
 
-import { authenticateUser, USER_AUTHENTICATION_SUCCEEDED } from './redux/user';
-import { initializeGame, GAME_INITIALIZATION_SUCCEEDED, GAME_NOT_INITIALIZED } from './redux/game';
+import { authenticateUser, USER_AUTHENTICATION_SUCCEEDED } from './redux/userReducer';
+import { initializeGame, GAME_INITIALIZATION_SUCCEEDED, GAME_NOT_INITIALIZED } from './redux/gameReducer';
 
 import { LoadingScreen } from './LoadingIndicator';
 import Header from './Header';

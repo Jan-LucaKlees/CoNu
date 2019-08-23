@@ -3,7 +3,7 @@ import { connect } from 'react-redux'
 import c from 'classnames'
 
 import * as GameLogic from './GameLogic';
-import { selectOrPairCell } from './redux/game';
+import { selectOrPairCell } from './redux/gameReducer';
 
 import { BtnSingleLine } from './Btn';
 
