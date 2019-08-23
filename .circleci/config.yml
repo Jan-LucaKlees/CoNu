@@ -1,6 +1,6 @@
 version: 2
 jobs:
-  build:
+  test:
     docker:
       - image: circleci/node:11.15.0-stretch
     steps:
@@ -20,4 +20,23 @@ jobs:
               JEST_JUNIT_OUTPUT: "reports/junit/js-test-results.xml"
       - store_test_results:
           path: reports/junit
+
+  build:
+    docker:
+      - image: circleci/node:11.15.0-stretch
+    steps:
+      - checkout
+      - run:
+          name: Installig packages...
+          command: npm ci
+      - run:
+          name: Building the game...
+          command: npm run build
+
+workflows:
+  version: 2
+  test:
+    jobs:
+      - build
+      - test
 
