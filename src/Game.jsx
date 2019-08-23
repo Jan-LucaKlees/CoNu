@@ -16,7 +16,7 @@ class Game extends React.PureComponent {
 
 		this.state = {
 			fieldExited: this.props.finished,
-			wonMessageEntered: false,
+			wonMessageEntered: this.props.finished,
 		}
 	}
 
