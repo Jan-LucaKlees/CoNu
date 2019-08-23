@@ -2,8 +2,8 @@ import React from 'react';
 import { connect } from 'react-redux'
 import { CSSTransition } from 'react-transition-group';
 
-import { toggleMenu, showMenu, collapseMenuWithTimeout } from './redux/header';
-import { startNewGame, GAME_INITIALIZATION_SUCCEEDED } from './redux/game';
+import { toggleMenu, showMenu, collapseMenuWithTimeout } from './redux/headerReducer';
+import { startNewGame, GAME_INITIALIZATION_SUCCEEDED } from './redux/gameReducer';
 
 import Btn, { BtnInvisible } from './Btn';
 

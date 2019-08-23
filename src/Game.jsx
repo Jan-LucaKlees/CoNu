@@ -3,7 +3,7 @@ import { connect } from 'react-redux'
 import { CSSTransition } from 'react-transition-group';
 
 import * as GameLogic from './GameLogic';
-import { extendField, startNewGame } from './redux/game';
+import { extendField, startNewGame } from './redux/gameReducer';
 
 import Field from './Field';
 import { BtnSingleLine, BtnCuboid } from './Btn';
