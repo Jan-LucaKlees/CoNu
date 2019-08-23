@@ -26,8 +26,17 @@ const mapStateToProps = ( state ) => {
 	let cells = state.game.get( 'cells' );
 	let activeRows = Array.from( GameLogic.getRowIndicesWithPairableCells( cells ) );
 
-	// check if the last row is not containing as much cells as the other rows
-	if( !hasLastRowPairableCells( cells ) && !isLastRowFullWidth( cells ) ) {
+	// We want to display the last row, even when it is not containing any
+	// pairable cells. This is to make the extension of the game field not
+	// surprising in the way that suddenly your half last row appears again with
+	// the rest of its space filled with the new numbers. Or in other words:
+	// hiding the last row when it is not completely filled with cells gives the
+	// impression, that new cells would be appended in a completely new row,
+	// starting from index 0 in that new row.
+	// But this only applies for games that are not finished, so we check if we
+	// have any active rows in the beginning. Otherwise jsut the empty last row
+	// would be displayed together with a won message.
+	if( activeRows.length && !hasLastRowPairableCells( cells ) && !isLastRowFullWidth( cells ) ) {
 		// append the last row index to the active rows
 		let lastRowIndex = GameLogic.getRowCount( cells ) -1;
 		activeRows.push( lastRowIndex );

@@ -38,6 +38,7 @@ class Game extends React.PureComponent {
 					<CSSTransition
 						in={ !this.props.finished }
 						timeout={ 300 }
+						mountOnEnter={ true }
 						onExited={ () => this.setState({ fieldExited: true }) }
 						classNames="field">
 						<Field />
