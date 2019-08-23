@@ -44,11 +44,30 @@ $conu-padding: 0.4rem;
 		transition-duration: .3s;
 		transition-timing-function: ease-out;
 
-		&--collapsed {
+		&-enter {
+			width: 0;
+			opacity: 0;
+		}
+
+		&-enter-active {
+			width: 12rem;
+			opacity: 1;
+		}
+
+		&-exit {
+			width: 12rem;
+			opacity: 1;
+		}
+
+		&-exit-active {
 			width: 0;
 			opacity: 0;
 
 			transition-timing-function: ease-in;
+		}
+
+		&-exit-done {
+			display: none;
 		}
 	}
 }

@@ -1,20 +1,28 @@
 import React from 'react';
+import { connect } from 'react-redux'
 
-import Cell from './Cell'
+import * as GameLogic from './GameLogic';
 
-const Row = ({ cells, selectedCell, onSelectCell }) =>
+import Cell from './Cell';
+
+
+const Row = ({ cellIndices }) => (
 	<div className="field__row">
 		{
-			cells.map( ( cell ) =>
-				<Cell
-					key={ cell.index }
-					number={ cell.number }
-					paired={ cell.paired }
-					selected={ selectedCell === cell.index }
-					onClick={ () => onSelectCell( cell.index ) } />
-			)
+			cellIndices.map( cellIndex => (
+				<Cell key={ `cell_${ cellIndex }` } index={ cellIndex } />
+			))
 		}
 	</div>
+);
 
-export default Row;
+const mapStateToProps = ( state, props ) => {
+	return {
+		cellIndices: Array.from( GameLogic.getCellIndicesForRow( state.game.get( 'cells' ), props.index ) ),
+	}
+}
+
+export default connect(
+	mapStateToProps
+)( Row )
 
