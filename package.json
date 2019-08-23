@@ -1,6 +1,6 @@
 {
   "name": "CoNu",
-  "version": "2.1.0",
+  "version": "2.1.1",
   "description": "A game about connecting numbers.",
   "main": "index.html",
   "scripts": {
@@ -24,7 +24,6 @@
     "classnames": "^2.2.6",
     "firebase": "^6.3.3",
     "immutable": "^4.0.0-rc.12",
-    "js-cookie": "^2.2.1",
     "minireset.css": "0.0.5",
     "prop-types": "^15.7.2",
     "react": "^16.8.6",
