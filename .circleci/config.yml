@@ -28,10 +28,30 @@ jobs:
           name: Building the game...
           command: npm run build
 
+  deploy:
+    docker:
+      - image: circleci/node:11.15.0-stretch
+    steps:
+      - checkout
+      - run:
+          name: Installig packages...
+          command: npm ci
+      - run:
+          name: Building the game...
+          command: npm run deploy -- --token "$FIREBASE_TOKEN"
+
 workflows:
   version: 2
   test:
     jobs:
-      - build
       - test
+      - build
+  deploy:
+    jobs:
+      - deploy:
+          filters:
+            branches:
+              only: master
+            tags:
+              only: /v.*/
 
