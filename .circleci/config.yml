@@ -1,8 +1,14 @@
 version: 2.1
-jobs:
-  test:
+
+executors:
+  node:
     docker:
       - image: circleci/node:11.15.0-stretch
+    working_directory: /conu
+
+jobs:
+  test:
+    executor: node
     steps:
       - checkout
       - run:
@@ -17,8 +23,7 @@ jobs:
           path: reports/junit
 
   build:
-    docker:
-      - image: circleci/node:11.15.0-stretch
+    executor: node
     steps:
       - checkout
       - run:
@@ -29,8 +34,7 @@ jobs:
           command: npm run build
 
   deploy:
-    docker:
-      - image: circleci/node:11.15.0-stretch
+    executor: node
     steps:
       - checkout
       - run:
