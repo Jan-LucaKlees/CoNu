@@ -7,6 +7,18 @@ executors:
     working_directory: /conu
 
 jobs:
+
+  build:
+    executor: node
+    steps:
+      - checkout
+      - run:
+          name: Installing packages...
+          command: npm ci
+      - run:
+          name: Building the game...
+          command: npm run build
+
   test:
     executor: node
     steps:
@@ -22,17 +34,6 @@ jobs:
       - store_test_results:
           path: reports/junit
 
-  build:
-    executor: node
-    steps:
-      - checkout
-      - run:
-          name: Installing packages...
-          command: npm ci
-      - run:
-          name: Building the game...
-          command: npm run build
-
   deploy:
     executor: node
     steps:
@@ -46,10 +47,12 @@ jobs:
 
 workflows:
   version: 2
+
   test:
     jobs:
-      - test
       - build
+      - test
+
   deploy:
     jobs:
       - deploy:
