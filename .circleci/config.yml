@@ -18,6 +18,17 @@ jobs:
       - run:
           name: Building the game...
           command: npm run build
+      - persist_to_workspace:
+          root: ./
+          paths:
+            # Artifacts
+            - docs
+            - public
+            # Config
+            - .firebaserc
+            - firebase.json
+            - firestore.indexes.json
+            - firestore.rules
 
   test:
     executor: node
@@ -37,13 +48,14 @@ jobs:
   deploy:
     executor: node
     steps:
-      - checkout
+      - attach_workspace:
+          at: ./
       - run:
-          name: Installing packages...
-          command: npm ci
+          name: Installing FireBase tools...
+          command: npm i -g firebase-tools
       - run:
           name: Building the game...
-          command: npm run deploy -- --token "$FIREBASE_TOKEN"
+          command: firebase deploy --token "$FIREBASE_TOKEN"
 
 workflows:
   version: 2
@@ -53,12 +65,18 @@ workflows:
       - build
       - test
 
-  deploy:
+  deploy_on_release:
     jobs:
-      - deploy:
+      - build:
           filters:
             branches:
               only: master
             tags:
               only: /v.*/
+      - test:
+          requires:
+            - build
+      - deploy:
+          requires:
+            - build
 
