@@ -1,6 +1,6 @@
 {
   "name": "CoNu",
-  "version": "2.1.1",
+  "version": "2.2.0",
   "description": "A game about connecting numbers.",
   "main": "index.html",
   "scripts": {
@@ -15,20 +15,23 @@
     "build": "npm run build:official-website && npm run build:github-pages",
     "_build-script": "webpack --config ./webpack.config.js --mode production",
     "build:official-website": "rm -rf public && npm run _build-script --",
-    "build:github-pages": "rm -rf docs   && npm run _build-script -- --env.BUILD_FOR_GITHUB_PAGES=true",
-    "deploy": "npm run test && npm run build && firebase deploy"
+    "build:github-pages": "rm -rf docs   && npm run _build-script -- --env.BUILD_FOR_GITHUB_PAGES=true"
   },
   "author": "Jan-Luca Klees",
   "license": "GNU GPLv3",
   "dependencies": {
     "classnames": "^2.2.6",
     "firebase": "^6.3.3",
-    "js-cookie": "^2.2.1",
+    "immutable": "^4.0.0-rc.12",
     "minireset.css": "0.0.5",
     "prop-types": "^15.7.2",
     "react": "^16.8.6",
     "react-dom": "^16.8.6",
+    "react-redux": "^7.1.0",
     "react-transition-group": "^4.2.1",
+    "redux": "^4.0.4",
+    "redux-logger": "^3.0.6",
+    "redux-thunk": "^2.3.0",
     "uuid": "^3.3.2",
     "webfontloader": "^1.6.28"
   },

@@ -1,23 +1,82 @@
-version: 2
-jobs:
-  build:
+version: 2.1
+
+executors:
+  node:
     docker:
       - image: circleci/node:11.15.0-stretch
+    working_directory: /tmp/conu
+
+jobs:
+
+  build:
+    executor: node
     steps:
       - checkout
-      - restore_cache:
-          key: npm-cache-{{ .Branch }}-{{ checksum "package-lock.json" }}
       - run:
+          name: Installing packages...
           command: npm ci
-      - save_cache:
-          key: npm-cache-{{ .Branch }}-{{ checksum "package-lock.json" }}
-          paths:
-            - "node_modules"
       - run:
-          name: Running tests
+          name: Building the game...
+          command: npm run build
+      - persist_to_workspace:
+          root: ./
+          paths:
+            # Artifacts
+            - docs
+            - public
+            # Config
+            - .firebaserc
+            - firebase.json
+            - firestore.indexes.json
+            - firestore.rules
+
+  test:
+    executor: node
+    steps:
+      - checkout
+      - run:
+          name: Installing packages...
+          command: npm ci
+      - run:
+          name: Running tests...
           command: npm run test -- --ci --reporters=default --reporters=jest-junit
           environment:
               JEST_JUNIT_OUTPUT: "reports/junit/js-test-results.xml"
       - store_test_results:
           path: reports/junit
+
+  deploy:
+    executor: node
+    steps:
+      - attach_workspace:
+          at: ./
+      - run:
+          name: Installing FireBase tools...
+          command: npm i -g firebase-tools
+      - run:
+          name: Building the game...
+          command: firebase deploy --token "$FIREBASE_TOKEN"
+
+workflows:
+  version: 2
+
+  test:
+    jobs:
+      - build
+      - test
+
+  deploy_on_release:
+    jobs:
+      - build:
+          filters:
+            branches:
+              only: master
+            tags:
+              only: /v.*/
+      - test:
+          requires:
+            - build
+      - deploy:
+          requires:
+            - build
 

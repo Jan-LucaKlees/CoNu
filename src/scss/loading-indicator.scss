@@ -17,7 +17,11 @@
 	transition-duration: .3s;
 	transition-timing-function: ease-out;
 
-	&--faded {
+	&-exit {
+		opacity: 1;
+	}
+
+	&-exit-active {
 		opacity: 0;
 
 		.loading-indicator__cube {

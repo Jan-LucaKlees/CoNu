@@ -1,10 +1,15 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import { Provider } from 'react-redux';
 import WebFont from 'webfontloader';
 
 import './scss/main.scss';
 
-import UrlBasedContentSwitcher from './UrlBasedContentSwitcher';
+import store from './redux/store';
+
+import Game from './Game';
+import RedirectNotice from './RedirectNotice';
+import AppLoader from './AppLoader';
 
 
 WebFont.load({
@@ -13,20 +18,20 @@ WebFont.load({
 	}
 });
 
-class CoNu extends React.PureComponent {
-	render() {
-		return (
-			<main className="conu">
-
-				<UrlBasedContentSwitcher />
-
-			</main>
-		);
-	}
-}
+const CoNu = () => (
+	<main className="conu">
+		{ window.location.host === HOSTNAME ? (
+			<AppLoader />
+		) : (
+			<RedirectNotice />
+		)}
+	</main>
+);
 
 ReactDOM.render(
-	<CoNu />,
+	<Provider store={ store }>
+		<CoNu />
+	</Provider>,
 	document.getElementById('react-root')
 );
 
