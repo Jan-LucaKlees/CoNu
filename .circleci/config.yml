@@ -76,7 +76,7 @@ workflows:
             tags:
               only: /^v.*/
             branches:
-              only: master
+              ignore: /.*/
       - test:
           filters: *release-on-master
       - deploy:
