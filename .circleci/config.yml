@@ -62,21 +62,25 @@ workflows:
 
   test:
     jobs:
-      - build
-      - test
+      - build:
+          filters: &all-branches-except-master
+            branches:
+              ignore: master
+      - test:
+          filters: *all-branches-except-master
 
   deploy_on_release:
     jobs:
       - build:
-          filters:
+          filters: &release-on-master
+            tags:
+              only: /^v.*/
             branches:
               only: master
-            tags:
-              only: /v.*/
       - test:
-          requires:
-            - build
+          filters: *release-on-master
       - deploy:
+          filters: *release-on-master
           requires:
             - build
             - test
