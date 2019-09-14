@@ -4,7 +4,7 @@ executors:
   node:
     docker:
       - image: circleci/node:11.15.0-stretch
-    working_directory: /conu
+    working_directory: /tmp/conu
 
 jobs:
 
