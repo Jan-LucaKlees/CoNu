@@ -52,7 +52,7 @@ jobs:
           at: ./
       - run:
           name: Installing FireBase tools...
-          command: npm i -g firebase-tools
+          command: sudo npm i -g firebase-tools
       - run:
           name: Building the game...
           command: firebase deploy --token "$FIREBASE_TOKEN"
