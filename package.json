@@ -15,8 +15,7 @@
     "build": "npm run build:official-website && npm run build:github-pages",
     "_build-script": "webpack --config ./webpack.config.js --mode production",
     "build:official-website": "rm -rf public && npm run _build-script --",
-    "build:github-pages": "rm -rf docs   && npm run _build-script -- --env.BUILD_FOR_GITHUB_PAGES=true",
-    "deploy": "npm run test && npm run build && firebase deploy"
+    "build:github-pages": "rm -rf docs   && npm run _build-script -- --env.BUILD_FOR_GITHUB_PAGES=true"
   },
   "author": "Jan-Luca Klees",
   "license": "GNU GPLv3",
