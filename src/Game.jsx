@@ -1,5 +1,5 @@
-import React from 'react';
-import { connect } from 'react-redux'
+import React, { useState } from 'react';
+import { useSelector, useDispatch } from 'react-redux'
 import { CSSTransition } from 'react-transition-group';
 
 import * as GameLogic from './GameLogic';
@@ -9,76 +9,60 @@ import Field from './Field';
 import { BtnSingleLine, BtnCuboid } from './Btn';
 
 
-class Game extends React.PureComponent {
+export default () => {
+	const dispatch = useDispatch();
 
-	constructor( props ) {
-		super( props );
+	const extendingField = useSelector( state => state.game.get( 'extendingField' ) );
+	const finished       = useSelector( state => GameLogic.isFinished( state.game.get( 'cells' ) ) );
 
-		this.state = {
-			fieldExited: this.props.finished,
-			wonMessageEntered: this.props.finished,
-		}
-	}
+	// Using local state as it is just for timing animations for this very
+	// component
+	const [ fieldExited, setFieldExited ]             = useState( finished );
+	const [ wonMessageEntered, setWonMessageEntered ] = useState( finished );
 
-	render() {
-		return (
-			<div className="game">
+	return (
+		<div className="game">
 
-				<div className="game__content">
+			<div className="game__content">
 
-					<CSSTransition
-						in={ this.props.finished && this.state.fieldExited }
-						timeout={ 200 }
-						mountOnEnter={ true }
-						onEntered={ () => this.setState({ wonMessageEntered: true }) }
-						classNames="game__won-message">
-						<h2 className="game__won-message">You Won!</h2>
-					</CSSTransition>
+				<CSSTransition
+					in={ finished && fieldExited }
+					timeout={ 200 }
+					mountOnEnter={ true }
+					onEntered={ () => setWonMessageEntered( true  ) }
+					classNames="game__won-message">
+					<h2 className="game__won-message">You Won!</h2>
+				</CSSTransition>
 
-					<CSSTransition
-						in={ !this.props.finished }
-						timeout={ 300 }
-						mountOnEnter={ true }
-						onExited={ () => this.setState({ fieldExited: true }) }
-						classNames="field">
-						<Field />
-					</CSSTransition>
+				<CSSTransition
+					in={ !finished }
+					timeout={ 300 }
+					mountOnEnter={ true }
+					onExited={ () => setFieldExited( true ) }
+					classNames="field">
+					<Field />
+				</CSSTransition>
 
-				</div>
+			</div>
 
-				<BtnCuboid
-					className="btn-cuboid--cell-matching-width"
-					showFace={ this.props.finished && this.state.wonMessageEntered ? "top" : "front" }
-							Front={(
-								<BtnSingleLine
-									disabled={ this.props.finished || this.props.extendingField }
-									onClick={ this.props.extendField }>
-									Extend
-								</BtnSingleLine>
-							)}
-							Top={(
-								<BtnSingleLine
-									onClick={ this.props.startNewGame }>
-									New Game
-								</BtnSingleLine>
-							)} />
+			<BtnCuboid
+				className="btn-cuboid--cell-matching-width"
+				showFace={ finished && wonMessageEntered ? "top" : "front" }
+				Front={(
+					<BtnSingleLine
+						disabled={ finished || extendingField }
+						onClick={ () => dispatch( extendField() ) }>
+						Extend
+					</BtnSingleLine>
+				)}
+				Top={(
+					<BtnSingleLine
+						onClick={ () => dispatch( startNewGame() ) }>
+						New Game
+					</BtnSingleLine>
+				)} />
 
-					</div>
-		);
-	}
+		</div>
+	);
 }
-
-const mapStateToProps = ( state ) => {
-	return {
-		extendingField: state.game.get( 'extendingField' ),
-		finished: GameLogic.isFinished( state.game.get( 'cells' ) ),
-	}
-};
-
-const mapDispatchToProps = { extendField, startNewGame };
-
-export default connect(
-	mapStateToProps,
-	mapDispatchToProps
-)( Game )
 

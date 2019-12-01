@@ -1,28 +1,27 @@
 import React from 'react';
-import { connect } from 'react-redux'
+import { useSelector, useDispatch } from 'react-redux'
+import { List, is } from 'immutable';
 
 import * as GameLogic from './GameLogic';
 
 import Cell from './Cell';
 
 
-const Row = ({ cellIndices }) => (
-	<div className="field__row">
-		{
-			cellIndices.map( cellIndex => (
-				<Cell key={ `cell_${ cellIndex }` } index={ cellIndex } />
-			))
-		}
-	</div>
-);
+const compareProps = ( prevProps, nextProps ) => prevProps.index == nextProps.index;
 
-const mapStateToProps = ( state, props ) => {
-	return {
-		cellIndices: Array.from( GameLogic.getCellIndicesForRow( state.game.get( 'cells' ), props.index ) ),
-	}
-}
+export default React.memo( ({ index }) => {
+	const cellIndices = useSelector( state => List(
+		GameLogic.getCellIndicesForRow( state.game.get( 'cells' ), index )
+	), is );
 
-export default connect(
-	mapStateToProps
-)( Row )
+	return (
+		<div className="field__row">
+			{
+				cellIndices.map( cellIndex => (
+					<Cell key={ `cell_${ cellIndex }` } index={ cellIndex } />
+				))
+			}
+		</div>
+	);
+}, compareProps );
 
