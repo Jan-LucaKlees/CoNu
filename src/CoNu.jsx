@@ -8,7 +8,6 @@ import './scss/main.scss';
 import store from './redux/store';
 
 import Game from './Game';
-import RedirectNotice from './RedirectNotice';
 import AppLoader from './AppLoader';
 
 
@@ -20,11 +19,7 @@ WebFont.load({
 
 const CoNu = () => (
 	<main className="conu">
-		{ window.location.host === HOSTNAME ? (
 			<AppLoader />
-		) : (
-			<RedirectNotice />
-		)}
 	</main>
 );
 
@@ -34,8 +29,4 @@ ReactDOM.render(
 	</Provider>,
 	document.getElementById('react-root')
 );
-
-if( DEV_SERVER ) {
-	module.hot.accept();
-}
 

@@ -6,16 +6,8 @@
   "scripts": {
     "test": "jest",
     "test:watch": "npm run test -- --watch",
-    "start": "npm run dev:official-website & npm run dev:github-pages",
-    "_dev-script": "webpack-dev-server --config ./webpack.config.js --mode development --devtool source-map",
-    "dev:official-website": "npm run _dev-script --",
-    "dev:github-pages": "npm run _dev-script -- --env.BUILD_FOR_GITHUB_PAGES=true --port 8081",
-    "preview": "npm run preview:official-website",
-    "preview:official-website": "npm run build:official-website -- --env.PREVIEW=true && firebase serve --only hosting",
-    "build": "npm run build:official-website && npm run build:github-pages",
-    "_build-script": "webpack --config ./webpack.config.js --mode production",
-    "build:official-website": "rm -rf public && npm run _build-script --",
-    "build:github-pages": "rm -rf docs   && npm run _build-script -- --env.BUILD_FOR_GITHUB_PAGES=true"
+    "start": "encore dev-server --hot",
+    "build": "encore production"
   },
   "author": "Jan-Luca Klees",
   "license": "GNU GPLv3",
@@ -36,24 +28,13 @@
     "webfontloader": "^1.6.28"
   },
   "devDependencies": {
-    "@babel/core": "^7.14.2",
-    "@babel/preset-env": "^7.14.2",
-    "@babel/preset-react": "^7.13.13",
-    "babel-loader": "^8.2.2",
-    "css-loader": "^5.2.4",
+    "@babel/preset-react": "^7.0.0",
+    "@symfony/webpack-encore": "^1.8.1",
     "file-loader": "^6.2.0",
-    "html-webpack-plugin": "^3.2.0",
+    "html-webpack-plugin": "^5.5.0",
     "jest": "^24.9.0",
     "jest-junit": "^9.0.0",
-    "mini-css-extract-plugin": "^1.6.0",
-    "node-sass": "^6.0.0",
-    "react-hot-loader": "^4.13.0",
-    "sass": "^1.32.13",
-    "sass-loader": "^10.0.0",
-    "style-loader": "^2.0.0",
-    "webpack": "^4.41.2",
-    "webpack-cli": "^3.3.11",
-    "webpack-dev-server": "^3.11.0",
-    "webpack-merge": "^4.2.2"
+    "sass": "^1.49.8",
+    "sass-loader": "^12.0.0"
   }
 }
