@@ -10,7 +10,7 @@
     "build": "encore production"
   },
   "author": "Jan-Luca Klees",
-  "license": "GNU GPLv3",
+  "license": "GPL-3.0",
   "dependencies": {
     "classnames": "^2.3.1",
     "firebase": "^7.15.0",
