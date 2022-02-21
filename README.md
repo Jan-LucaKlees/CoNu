@@ -12,7 +12,7 @@ connect them by first clicking on one number and then on the other one.
 If you run out of numbers to connect, you can extend the playing field. Doing so all
 unconnected numbers will be appended to the playing field, possibly enabling new connections.
 
-You can play it here: https://conu.app/
+You can play it here: https://janlucaklees.github.io/conu/
 
 Have fun!
 
