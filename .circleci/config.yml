@@ -3,7 +3,7 @@ version: 2.1
 executors:
   node:
     docker:
-      - image: circleci/node:11.15.0-stretch
+      - image: node:17-alpine
     working_directory: /tmp/conu
 
 jobs:
@@ -14,16 +14,15 @@ jobs:
       - checkout
       - run:
           name: Installing packages...
-          command: npm ci
+          command: yarn install
       - run:
           name: Building the game...
-          command: npm run build
+          command: yarn build
       - persist_to_workspace:
           root: ./
           paths:
             # Artifacts
             - docs
-            - public
             # Config
             - .firebaserc
             - firebase.json
@@ -36,10 +35,10 @@ jobs:
       - checkout
       - run:
           name: Installing packages...
-          command: npm ci
+          command: yarn install
       - run:
           name: Running tests...
-          command: npm run test -- --ci --reporters=default --reporters=jest-junit
+          command: yarn run test -- --ci --reporters=default --reporters=jest-junit
           environment:
               JEST_JUNIT_OUTPUT: "reports/junit/js-test-results.xml"
       - store_test_results:
@@ -52,7 +51,7 @@ jobs:
           at: ./
       - run:
           name: Installing FireBase tools...
-          command: sudo npm i -g firebase-tools
+          command: yarn install -g firebase-tools
       - run:
           name: Building the game...
           command: firebase deploy --token "$FIREBASE_TOKEN"
