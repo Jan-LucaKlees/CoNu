@@ -1,6 +1,6 @@
-import * as firebase from "firebase/app";
-import "firebase/auth";
-import "firebase/firestore";
+import firebase from 'firebase/compat/app';
+import 'firebase/compat/auth';
+import 'firebase/compat/firestore';
 import { Map, Set } from 'immutable';
 import { v4 as uuidv4 } from 'uuid';
 
@@ -124,8 +124,6 @@ export function startNewGame() {
 }
 
 function getCurrentOrNewGameRefForUser( user ) {
-	console.assert( user instanceof firebase.User );
-
 	return new Promise( ( resolve, reject ) => {
 		let gamesCollection = db.collection( 'games' );
 
@@ -148,8 +146,6 @@ function getCurrentOrNewGameRefForUser( user ) {
 }
 
 function initializeNewGameRef( user ) {
-	console.assert( user instanceof firebase.User );
-
 	return new Promise( ( resolve, reject ) => {
 		let newGameId = uuidv4();
 
