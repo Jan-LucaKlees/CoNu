@@ -1,0 +1,18 @@
+{
+  "entrypoints": {
+    "app": {
+      "js": [
+        "/conu/982.b8c44bb2.js",
+        "/conu/app.c5cc0945.js"
+      ],
+      "css": [
+        "/conu/app.e2ef2aa1.css"
+      ]
+    }
+  },
+  "integrity": {
+    "/conu/982.b8c44bb2.js": "sha384-N/aWJm+p4gy0hIg1lyM6AbjPKYvmGdv6AxoaCirbAIN9L8lh12LTOl6ae/HoSeBK",
+    "/conu/app.c5cc0945.js": "sha384-Qqwq5ysxHDvbiSzYJguTERpRemDuUDATxiAzI4NuqbjvxzPCUgBbC4tWSyOZ4bb2",
+    "/conu/app.e2ef2aa1.css": "sha384-hyPmMBPEYA1/FDuyNighwCDbtT54XcBjT7c4ORSDf/1IuK+AacA0f0Bv53ADcN+f"
+  }
+}
