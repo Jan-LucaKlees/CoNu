@@ -9,6 +9,9 @@ on:
   schedule:
     - cron: '0 0 1 * *'
 
+paths:
+  - src
+
 jobs:
   analyze:
     name: Analyze
