@@ -1,3 +1,6 @@
+@use 'sass:math';
+
+
 // I calculated this value by hand; TODO add calc() expression
 $cell-width: 2.511rem;
 $cell-h-spacing: 0.2rem;
@@ -31,7 +34,7 @@ $row-height: $btn-single-line-height + $cell-v-spacing;
 	}
 
 	&__cell-wrapper {
-		padding: $cell-v-spacing / 2 0;
+		padding: math.div($cell-v-spacing, 2) 0;
 	}
 }
 

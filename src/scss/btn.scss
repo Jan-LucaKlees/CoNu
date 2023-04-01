@@ -1,3 +1,6 @@
+@use 'sass:math';
+
+
 $btn-single-line-height: 3.7rem;
 
 $btn-box-shadow:        .17rem .12rem .1rem 0 rgba( 0, 0, 0, 0.4 );
@@ -69,7 +72,7 @@ $btn-box-shadow-active: .10rem .05rem .05rem 0 rgba( 0, 0, 0, 0.6 );
 
 	perspective: 800px;
 
-	$transform-height: $btn-single-line-height / 2;
+	$transform-height: math.div($btn-single-line-height, 2);
 
 	&__cuboid {
 		position: relative;

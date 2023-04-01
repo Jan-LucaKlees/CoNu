@@ -1,3 +1,6 @@
+@use 'sass:math';
+
+
 .loading-screen {
 	display: flex;
 	justify-content: center;
@@ -41,7 +44,7 @@
 
 	perspective: 800px;
 
-	$transform-height: 4rem / 2;
+	$transform-height: math.div(4rem, 2);
 
 	&__cube {
 		position: relative;
